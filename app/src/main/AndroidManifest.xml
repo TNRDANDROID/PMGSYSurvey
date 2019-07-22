@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.nic.PMGSYSurvey">
+    package="com.nic.PMAYSurvey">
 
     <supports-screens
         android:anyDensity="true"
@@ -37,7 +37,7 @@
     <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
 
     <application
-        android:name="com.nic.PMGSYSurvey.application.NICApplication"
+        android:name="com.nic.PMAYSurvey.application.NICApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -51,7 +51,7 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <activity android:name="com.nic.PMGSYSurvey.activity.SplashScreen">
+        <activity android:name="com.nic.PMAYSurvey.activity.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -59,16 +59,38 @@
 
         </activity>
         <activity
-            android:name="com.nic.PMGSYSurvey.activity.LoginScreen"
+            android:name="com.nic.PMAYSurvey.activity.LoginScreen"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
 
         <activity
-            android:name="com.nic.PMGSYSurvey.activity.HomePage"
+            android:name="com.nic.PMAYSurvey.activity.HomePage"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
+
+        <activity
+            android:name="com.nic.PMAYSurvey.activity.CameraScreen"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" />
+
+        <activity
+            android:name="com.nic.PMAYSurvey.activity.AppUpdateDialog"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.nic.PMAYSurvey.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
     </application>
 

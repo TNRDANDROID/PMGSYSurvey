@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.nic.PMGSYSurvey"
+        applicationId "com.nic.PMAYSurvey"
         minSdkVersion 21
         multiDexEnabled true
 
@@ -39,6 +39,9 @@ android {
 }
 repositories {
     maven { url "https://jitpack.io" }
+    maven {
+        url 'http://dl.bintray.com/amulyakhare/maven'
+    }
 }
 
 dependencies {
@@ -53,5 +56,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation files('libs/volley.jar')
 }

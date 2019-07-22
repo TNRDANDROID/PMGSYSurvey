@@ -5,7 +5,7 @@
 
         <variable
             name="activity"
-            type="com.nic.PMGSYSurvey.activity.HomePage" />
+            type="com.nic.PMAYSurvey.activity.HomePage" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -39,6 +39,7 @@
                         style="@style/font_circular_bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_12sdp"
                         android:layout_centerInParent="true"
                         android:text="Home Page"
                         android:textColor="@android:color/white"
@@ -159,7 +160,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="15dp"
 
-                        android:textColor="@android:color/black"
+                        android:textColor="@android:color/white"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
                         customfontdemo:fontName="@string/font_normal" />
@@ -193,16 +194,17 @@
                     customfontdemo:fontName="@string/font_circular_bold" />
 
                 <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-                    android:id="@+id/work_list"
+                    android:id="@+id/pmay_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_18sdp"
                     android:layout_below="@+id/habitation_tv"
                     android:layout_alignParentBottom="true"
                     android:fadeScrollbars="false"
                     android:scrollbarSize="4dp"
                     android:scrollbars="vertical"
                     app:shimmer_demo_shimmer_color="#8FFFFFFF"
-                    android:visibility="gone"/>
+                   android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/not_found_tv"

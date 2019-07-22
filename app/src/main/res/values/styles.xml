@@ -3,7 +3,7 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-    <!-- Base com.nic.PMGSYSurvey.application theme. -->
+    <!-- Base PMAYSurveyapplication theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -77,7 +77,7 @@
         <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
     </style>
 
-    <!-- Theme.AppCompat.Light is not a com.nic.PMGSYSurvey.dialog theme -->
+    <!-- Theme.AppCompat.Light is not a PMAYSurveydialog theme -->
 
     <style name="RegistrationPage">
         <item name="android:textColorHint">@color/black</item>
