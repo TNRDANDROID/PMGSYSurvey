@@ -55,6 +55,8 @@ public class CommonAdapter extends BaseAdapter {
             tv_type.setText(pmgsySurvey.getBlockName());
         } else if (type.equalsIgnoreCase("VillageList")) {
             tv_type.setText(pmgsySurvey.getPvName());
+        } else if (type.equalsIgnoreCase("HabitationList")) {
+            tv_type.setText(pmgsySurvey.getHabitationName());
         }
         return view;
     }

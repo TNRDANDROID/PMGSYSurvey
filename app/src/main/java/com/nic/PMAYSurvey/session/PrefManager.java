@@ -38,6 +38,7 @@ public class PrefManager {
     private static final String KEY_DISTRICT_CODE = "District_Code";
     private static final String KEY_BLOCK_CODE = "Block_Code";
     private static final String KEY_PV_CODE = "Pv_Code";
+    private static final String KEY_HAB_CODE = "Hab_Code";
     private static final String KEY_DISTRICT_NAME = "District_Name";
     private static final String KEY_DESIGNATION = "Designation";
     private static final String KEY_NAME = "Name";
@@ -183,6 +184,15 @@ public class PrefManager {
         return pref.getString(KEY_PV_CODE, null);
     }
 
+    public Object setHabCode(Object key) {
+        editor.putString(KEY_HAB_CODE, String.valueOf(key));
+        editor.commit();
+        return key;
+    }
+
+    public String getHabCode() {
+        return pref.getString(KEY_HAB_CODE, null);
+    }
 
 
 

@@ -63,6 +63,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private ArrayList<PMAYSurvey> PmayList = new ArrayList<>();
 
     private List<PMAYSurvey> Village = new ArrayList<>();
+    private List<PMAYSurvey> Habitation = new ArrayList<>();
     JSONObject savePMAYDataSet = new JSONObject();
 
     String pref_Block, pref_Village;
@@ -83,9 +84,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         if (bundle != null) {
             isHome = bundle.getString("Home");
         }
-        initRecyclerView();
-        homeAdapter = new HomeAdapter(HomePage.this, PmayList,dbData);
-        recyclerView.setAdapter(homeAdapter);
         homeScreenBinding.villageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -94,8 +92,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     pref_Village = Village.get(position).getPvName();
                     prefManager.setVillageListPvName(pref_Village);
                     prefManager.setPvCode(Village.get(position).getPvCode());
-                    new fetchScheduletask().execute();
-
+                    getHabList();
                 }
             }
 
@@ -106,122 +103,35 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         });
         villageFilterSpinner(prefManager.getBlockCode());
 
-
-    }
-
-    private void initRecyclerView() {
-        recyclerView = homeScreenBinding.pmayList;
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setNestedScrollingEnabled(false);
-        //syncButtonVisibility();
-
-    }
-
-    public class fetchScheduletask extends AsyncTask<Void, Void,
-            ArrayList<PMAYSurvey>> {
-        @Override
-        protected ArrayList<PMAYSurvey> doInBackground(Void... params) {
-            dbData.open();
-            PmayList = new ArrayList<>();
-            PmayList = dbData.getAll_PMAYList(prefManager.getPvCode());
-            Log.d("PVCODE", String.valueOf(prefManager.getPvCode()));
-            Log.d("PMAY_COUNT", String.valueOf(PmayList.size()));
-            return PmayList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<PMAYSurvey> pmaySurveys) {
-            super.onPostExecute(pmaySurveys);
-            recyclerView.setVisibility(View.VISIBLE);
-            homeAdapter = new HomeAdapter(HomePage.this, PmayList,dbData);
-            recyclerView.setAdapter(homeAdapter);
-
-
-
-            recyclerView.showShimmerAdapter();
-            recyclerView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loadCards();
-                }
-            }, 1000);
-        }
-    }
-
-    private void loadCards() {
-
-        recyclerView.hideShimmerAdapter();
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getComponentName()));
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        // listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        homeScreenBinding.habitationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                // filter recycler view when query submitted
-                homeAdapter.getFilter().filter(query);
-                return false;
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+
+                    pref_Village = Village.get(position).getHabitationName();
+                    prefManager.setHabCode(Village.get(position).getHabCode());
+
+                }
             }
 
             @Override
-            public boolean onQueryTextChange(String query) {
-                // filter recycler view when text is changed
-                homeAdapter.getFilter().filter(query);
-                return false;
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
-        return true;
+
+
     }
+
+
+
+
 
     @Override
     public void onBackPressed() {
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            return;
-        }
         super.onBackPressed();
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
-    }
-
-    public void toUpload() {
-        if (Utils.isOnline()) {
-          //  new toUploadTask().execute();
-        } else {
-            Utils.showAlert(this, "Please Turn on Your Mobile Data to Upload");
-        }
-    }
-
-    public void syncData() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("savePMAYImages", Api.Method.POST, UrlGenerator.getPMAYListUrl(), savePMAYImagesJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public JSONObject savePMAYImagesJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), savePMAYDataSet.toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("savePMAYImages", "" + authKey);
-        return dataSet;
     }
 
 
@@ -256,6 +166,36 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         homeScreenBinding.villageSpinner.setAdapter(new CommonAdapter(this, Village, "VillageList"));
     }
 
+
+    public void habitationFilterSpinner(String filterHabitation) {
+        Cursor VillageList = null;
+        VillageList = db.rawQuery("SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " where pvcode = '" + filterHabitation + "'", null);
+
+        Habitation.clear();
+        PMAYSurvey habitationListValue = new PMAYSurvey();
+        habitationListValue.setHabitationName("Select Habitation");
+        Habitation.add(habitationListValue);
+        if (VillageList.getCount() > 0) {
+            if (VillageList.moveToFirst()) {
+                do {
+                    PMAYSurvey habList = new PMAYSurvey();
+                    String districtCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
+                    String blockCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
+                    String pvCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_CODE));
+                    String pvname = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_NAME));
+
+                    habList.setDistictCode(districtCode);
+                    habList.setBlockCode(blockCode);
+                    habList.setPvCode(pvCode);
+                    habList.setPvName(pvname);
+
+                    Habitation.add(habList);
+                    Log.d("spinnersize", "" + Habitation.size());
+                } while (VillageList.moveToNext());
+            }
+        }
+        homeScreenBinding.habitationSpinner.setAdapter(new CommonAdapter(this, Habitation, "HabitationList"));
+    }
 
     @Override
     public void onClick(View v) {
@@ -294,13 +234,24 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     @Override
     protected void onResume() {
         super.onResume();
-        homeAdapter.notifyDataSetChanged();
-     //   syncButtonVisibility();
+    }
+    public void getHabList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("HabitationList", Api.Method.POST, UrlGenerator.getServicesListUrl(), habitationListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
-
-
+    public JSONObject habitationListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.HabitationListDistrictBlockVillageWiseJsonParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("HabitationList", "" + authKey);
+        return dataSet;
+    }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
@@ -309,17 +260,14 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
 
-            if ("savePMAYImages".equals(urlType) && responseObj != null) {
+            if ("HabitationList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     Utils.showAlert(this, "Your Image is saved");
-//                    dbData.open();
-//                    dbData.deleteSavedActivity();
-                    //syncButtonVisibility();
                 }
-                Log.d("savedImage", "" + responseDecryptedBlockKey);
+                Log.d("HabitationList", "" + responseDecryptedBlockKey);
             }
 
         } catch (JSONException e) {

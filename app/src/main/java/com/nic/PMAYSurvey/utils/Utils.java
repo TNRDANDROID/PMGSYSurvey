@@ -1169,6 +1169,17 @@ public class Utils {
         return dataSet;
     }
 
+    public static JSONObject HabitationListDistrictBlockVillageWiseJsonParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_HABITATION_LIST_DISTRICT_BLOCK_VILLAGE_WISE);
+        dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+        dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+        dataSet.put(AppConstant.PV_CODE, prefManager.getPvCode());
+        Log.d("HabListDistBlockVill", "" + dataSet);
+        return dataSet;
+    }
+
 
 
 }

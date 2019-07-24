@@ -39,6 +39,7 @@ public class AppConstant {
 
 
     public static String KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE = "village_list_district_block_wise";
+    public static String KEY_HABITATION_LIST_DISTRICT_BLOCK_VILLAGE_WISE = "habitation_list_district_block_village_wise";
 
     public static String BENEFICIARY_NAME = "beneficiary_name";
     public static String HABITATION_NAME = "habitation_name";
