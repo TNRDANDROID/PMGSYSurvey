@@ -238,6 +238,16 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    public void getHabList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("HabitationList", Api.Method.POST, UrlGenerator.getServicesListUrl(), habitationListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     public void getPMAYList() {
         try {
             new ApiService(this).makeJSONObjectRequest("PMAYList", Api.Method.POST, UrlGenerator.getPMAYListUrl(), pmayListJsonParams(), "not cache", this);
@@ -260,6 +270,15 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("PMAYList", "" + authKey);
+        return dataSet;
+    }
+
+    public JSONObject habitationListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.HabitationListDistrictBlockVillageWiseJsonParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("HabitationList", "" + authKey);
         return dataSet;
     }
 
@@ -293,6 +312,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         prefManager.setUserPassKey(decryptedKey);
                         getVillageList();
                         getPMAYList();
+                        getHabList();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -325,6 +345,15 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     new InsertPMAYTask().execute(jsonObject);
                 }
                 Log.d("PMAYList", "" + responseDecryptedBlockKey);
+            }
+            if ("HabitationList".equals(urlType) && loginResponse != null) {
+                String key = loginResponse.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertHabTask().execute(jsonObject);
+                }
+                Log.d("HabitationList", "" + responseDecryptedBlockKey);
             }
 
         } catch (JSONException e) {
@@ -366,6 +395,44 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             return null;
         }
 
+    }
+
+    public class InsertHabTask extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            ArrayList<PMAYSurvey> hablist_count = dbData.getAll_Habitation();
+            if (hablist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        PMAYSurvey habListValue = new PMAYSurvey();
+                        try {
+                            habListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
+                            habListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
+                            habListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                            habListValue.setHabCode(jsonArray.getJSONObject(i).getString(AppConstant.HABB_CODE));
+                            habListValue.setHabitationName(jsonArray.getJSONObject(i).getString(AppConstant.HABITATION_NAME));
+
+                            dbData.insertHabitation(habListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            }
+            return null;
+
+
+        }
     }
 
 
@@ -435,5 +502,4 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             Utils.showAlert(this, "No data available for offline. Please Turn On Your Network");
         }
     }
-
 }

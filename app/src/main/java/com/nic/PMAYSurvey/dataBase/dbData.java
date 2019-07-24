@@ -87,6 +87,56 @@ public class dbData {
         return cards;
     }
 
+    public PMAYSurvey insertHabitation(PMAYSurvey pmgsySurvey) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.DISTRICT_CODE, pmgsySurvey.getDistictCode());
+        values.put(AppConstant.BLOCK_CODE, pmgsySurvey.getBlockCode());
+        values.put(AppConstant.PV_CODE, pmgsySurvey.getPvCode());
+        values.put(AppConstant.HABB_CODE, pmgsySurvey.getHabCode());
+        values.put(AppConstant.HABITATION_NAME, pmgsySurvey.getHabitationName());
+
+        long id = db.insert(DBHelper.HABITATION_TABLE_NAME,null,values);
+        Log.d("Inserted_id_habitation", String.valueOf(id));
+
+        return pmgsySurvey;
+    }
+    public ArrayList<PMAYSurvey > getAll_Habitation() {
+
+        ArrayList<PMAYSurvey > cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select * from "+DBHelper.HABITATION_TABLE_NAME+" order by habitation_name asc",null);
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    PMAYSurvey  card = new PMAYSurvey ();
+                    card.setDistictCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
+                    card.setHabCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.HABB_CODE)));
+                    card.setHabitationName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.HABITATION_NAME)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
     public PMAYSurvey insertPMAY(PMAYSurvey pmgsySurvey) {
 
         ContentValues values = new ContentValues();

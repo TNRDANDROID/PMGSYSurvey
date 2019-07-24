@@ -30,6 +30,7 @@ public class AppConstant {
     public static String BLOCK_CODE = "bcode";
     public static String PV_CODE = "pvcode";
     public static String HAB_CODE = "habcode";
+    public static String HABB_CODE = "habitation_code";
     public static String BLOCK_NAME = "bname";
     public static String PV_NAME = "pvname";
     public static String DESIG_NAME = "desig_name";
@@ -39,7 +40,7 @@ public class AppConstant {
 
 
     public static String KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE = "village_list_district_block_wise";
-    public static String KEY_HABITATION_LIST_DISTRICT_BLOCK_VILLAGE_WISE = "habitation_list_district_block_village_wise";
+    public static String KEY_HABITATION_LIST_DISTRICT_BLOCK_WISE = "habitation_list_district_block_wise";
 
     public static String BENEFICIARY_NAME = "beneficiary_name";
     public static String HABITATION_NAME = "habitation_name";

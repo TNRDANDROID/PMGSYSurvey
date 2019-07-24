@@ -2,18 +2,13 @@ package com.nic.PMAYSurvey.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.SearchView;
@@ -21,8 +16,6 @@ import android.widget.SearchView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
@@ -46,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +76,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         if (bundle != null) {
             isHome = bundle.getString("Home");
         }
+        villageFilterSpinner(prefManager.getBlockCode());
         homeScreenBinding.villageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -92,7 +85,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     pref_Village = Village.get(position).getPvName();
                     prefManager.setVillageListPvName(pref_Village);
                     prefManager.setPvCode(Village.get(position).getPvCode());
-                    getHabList();
+                    habitationFilterSpinner(prefManager.getDistrictCode(),prefManager.getBlockCode(),prefManager.getPvCode());
                 }
             }
 
@@ -101,7 +94,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
             }
         });
-        villageFilterSpinner(prefManager.getBlockCode());
 
         homeScreenBinding.habitationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -167,31 +159,33 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     }
 
 
-    public void habitationFilterSpinner(String filterHabitation) {
-        Cursor VillageList = null;
-        VillageList = db.rawQuery("SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " where pvcode = '" + filterHabitation + "'", null);
+    public void habitationFilterSpinner(String dcode,String bcode, String pvcode) {
+        Cursor HABList = null;
+        HABList = db.rawQuery("SELECT * FROM " + DBHelper.HABITATION_TABLE_NAME + " where dcode = '" + dcode + "'and bcode = '" + bcode + "' and pvcode = '" + pvcode + "' order by habitation_name asc", null);
 
         Habitation.clear();
         PMAYSurvey habitationListValue = new PMAYSurvey();
         habitationListValue.setHabitationName("Select Habitation");
         Habitation.add(habitationListValue);
-        if (VillageList.getCount() > 0) {
-            if (VillageList.moveToFirst()) {
+        if (HABList.getCount() > 0) {
+            if (HABList.moveToFirst()) {
                 do {
                     PMAYSurvey habList = new PMAYSurvey();
-                    String districtCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
-                    String blockCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
-                    String pvCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_CODE));
-                    String pvname = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_NAME));
+                    String districtCode = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
+                    String blockCode = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
+                    String pvCode = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.PV_CODE));
+                    String habCode = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.HABB_CODE));
+                    String habName = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.HABITATION_NAME));
 
                     habList.setDistictCode(districtCode);
                     habList.setBlockCode(blockCode);
                     habList.setPvCode(pvCode);
-                    habList.setPvName(pvname);
+                    habList.setHabCode(habCode);
+                    habList.setHabitationName(habName);
 
                     Habitation.add(habList);
                     Log.d("spinnersize", "" + Habitation.size());
-                } while (VillageList.moveToNext());
+                } while (HABList.moveToNext());
             }
         }
         homeScreenBinding.habitationSpinner.setAdapter(new CommonAdapter(this, Habitation, "HabitationList"));
@@ -235,23 +229,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     protected void onResume() {
         super.onResume();
     }
-    public void getHabList() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("HabitationList", Api.Method.POST, UrlGenerator.getServicesListUrl(), habitationListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
-
-    public JSONObject habitationListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.HabitationListDistrictBlockVillageWiseJsonParams(this).toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("HabitationList", "" + authKey);
-        return dataSet;
-    }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
@@ -264,9 +242,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Your Image is saved");
-                }
+
                 Log.d("HabitationList", "" + responseDecryptedBlockKey);
             }
 
@@ -312,5 +288,12 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             finish();
             overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
         }
+    }
+
+    public void viewCamera(Integer type_of_photo) {
+        Intent intent = new Intent(this, CameraScreen.class);
+        intent.putExtra(AppConstant.TYPE_OF_PHOTO, type_of_photo);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 }

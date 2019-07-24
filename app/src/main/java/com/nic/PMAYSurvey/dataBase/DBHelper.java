@@ -11,7 +11,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public static final String VILLAGE_TABLE_NAME = " villageTable";
+    public static final String HABITATION_TABLE_NAME = " habitaionTable";
     public static final String PMAY_LIST_TABLE_NAME = "PMAYList";
+    public static final String SAVE_PMAY_DETAILS = "SavePMAYDetails";
     public static final String SAVE_PMAY_IMAGES = "SavePMAYImages";
 
     private Context context;
@@ -32,6 +34,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 "pvcode INTEGER," +
                 "pvname TEXT)");
 
+        db.execSQL("CREATE TABLE " + HABITATION_TABLE_NAME + " ("
+                + "dcode TEXT," +
+                "bcode TEXT," +
+                "pvcode TEXT," +
+                "habitation_code TEXT," +
+                "habitation_name TEXT)");
+
         db.execSQL("CREATE TABLE " + PMAY_LIST_TABLE_NAME + " ("
                 + "pvcode  TEXT," +
                 "habcode  TEXT," +
@@ -39,12 +48,19 @@ public class DBHelper extends SQLiteOpenHelper {
                 "secc_id  TEXT," +
                 "habitation_name TEXT)");
 
-        db.execSQL("CREATE TABLE " + SAVE_PMAY_IMAGES + " ("
-                + "dcode TEXT," +
+        db.execSQL("CREATE TABLE " + SAVE_PMAY_DETAILS + " ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                "dcode TEXT," +
                 "bcode TEXT," +
                 "pvcode TEXT," +
                 "habcode TEXT," +
                 "secc_id TEXT," +
+                "beneficiary_name TEXT," +
+                "father_name TEXT)");
+
+
+        db.execSQL("CREATE TABLE " + SAVE_PMAY_IMAGES + " ("
+                + "pmay_id INTEGER,"+
                 "image BLOB," +
                 "latitude TEXT," +
                 "longitude TEXT," +
@@ -59,6 +75,8 @@ public class DBHelper extends SQLiteOpenHelper {
             //drop table if already exists
             db.execSQL("DROP TABLE IF EXISTS " + VILLAGE_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + PMAY_LIST_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + HABITATION_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + SAVE_PMAY_DETAILS);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_PMAY_IMAGES);
             onCreate(db);
         }
