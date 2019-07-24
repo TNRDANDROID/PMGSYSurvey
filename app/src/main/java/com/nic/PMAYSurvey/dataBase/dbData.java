@@ -146,14 +146,26 @@ public class dbData {
         return cards;
     }
 
-    public ArrayList<PMAYSurvey> getSavedPMAYList() {
+    public ArrayList<PMAYSurvey> getSavedPMAYList(String dcode,String bcode, String pvcode,String habcode,String secc_id,String type_of_photo) {
 
         ArrayList<PMAYSurvey> cards = new ArrayList<>();
         Cursor cursor = null;
+        String selection = null;
+        String[] selectionArgs = null;
+
+        if(!type_of_photo.isEmpty()){
+            selection = "dcode = ? and bcode = ? and pvcode = ? and habcode = ? and secc_id = ? and type_of_photo = ? ";
+            selectionArgs = new String[]{dcode,bcode,pvcode,habcode,secc_id,type_of_photo};
+        }
+        else {
+            selection = "dcode = ? and bcode = ? and pvcode = ? and habcode = ? and secc_id = ?";
+            selectionArgs = new String[]{dcode,bcode,pvcode,habcode,secc_id};
+        }
+
 
         try {
             cursor = db.query(DBHelper.SAVE_PMAY_IMAGES,
-                    new String[]{"*"}, null, null, null, null, null);
+                    new String[]{"*"}, selection, selectionArgs, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
 

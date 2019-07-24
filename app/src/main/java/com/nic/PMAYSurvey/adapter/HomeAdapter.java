@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -16,38 +17,48 @@ import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.activity.CameraScreen;
 import com.nic.PMAYSurvey.activity.FullImageActivity;
 import com.nic.PMAYSurvey.constant.AppConstant;
+import com.nic.PMAYSurvey.dataBase.dbData;
 import com.nic.PMAYSurvey.databinding.HomePageAdpaterBinding;
 import com.nic.PMAYSurvey.model.PMAYSurvey;
+import com.nic.PMAYSurvey.session.PrefManager;
 import com.nic.PMAYSurvey.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> implements Filterable {
-private List<PMAYSurvey> pmayListValues;
-private List<PMAYSurvey> pmayValuesFiltered;
-private String letter;
-private Context context;
-private ColorGenerator generator = ColorGenerator.MATERIAL;
+    private List<PMAYSurvey> pmayListValues;
+    private List<PMAYSurvey> pmayValuesFiltered;
+    private String letter;
+    private Context context;
+    private ColorGenerator generator = ColorGenerator.MATERIAL;
+    private final dbData dbData;
+    PrefManager prefManager;
+    public final String dcode, bcode, pvcode;
 
-private LayoutInflater layoutInflater;
+    private LayoutInflater layoutInflater;
 
-public HomeAdapter(Context context, List<PMAYSurvey> pmayListValues) {
+    public HomeAdapter(Context context, List<PMAYSurvey> pmayListValues, dbData dbData) {
         this.context = context;
         this.pmayListValues = pmayListValues;
         this.pmayValuesFiltered = pmayListValues;
+        this.dbData = dbData;
+        prefManager = new PrefManager(context);
+        dcode = prefManager.getDistrictCode();
+        bcode = prefManager.getBlockCode();
+        pvcode = prefManager.getPvCode();
 
-        }
-
-public class MyViewHolder extends RecyclerView.ViewHolder {
-
-    private HomePageAdpaterBinding homePageAdpaterBinding;
-
-    public MyViewHolder(HomePageAdpaterBinding Binding) {
-        super(Binding.getRoot());
-        homePageAdpaterBinding = Binding;
     }
-}
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        private HomePageAdpaterBinding homePageAdpaterBinding;
+
+        public MyViewHolder(HomePageAdpaterBinding Binding) {
+            super(Binding.getRoot());
+            homePageAdpaterBinding = Binding;
+        }
+    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -84,6 +95,16 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 
                 viewOfflineImages(position, "Online"));
 
+        final String secc_id = String.valueOf(pmayValuesFiltered.get(position).getSeccId());
+        final String habcode = String.valueOf(pmayValuesFiltered.get(position).getHabCode());
+
+        ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(dcode, bcode, pvcode, habcode, secc_id,"");
+
+        if (imageOffline.size() > 0) {
+            holder.homePageAdpaterBinding.viewOfflineImages.setVisibility(View.VISIBLE);
+        }else {
+            holder.homePageAdpaterBinding.viewOfflineImages.setVisibility(View.GONE);
+        }
         holder.homePageAdpaterBinding.viewOfflineImages.setOnClickListener(view ->
 
                 viewOfflineImages(position, "Offline"));
@@ -138,7 +159,9 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     public void viewOfflineImages(int position, String OnOffType) {
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, FullImageActivity.class);
-
+        intent.putExtra(AppConstant.SECC_ID, pmayValuesFiltered.get(position).getSeccId());
+        intent.putExtra(AppConstant.HAB_CODE, pmayValuesFiltered.get(position).getHabCode());
+        intent.putExtra(AppConstant.PV_CODE, pmayValuesFiltered.get(position).getPvCode());
         intent.putExtra("OnOffType", OnOffType);
 
         if (OnOffType.equalsIgnoreCase("Offline")) {
@@ -156,6 +179,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
     }
+
     @Override
     public int getItemCount() {
         return pmayValuesFiltered == null ? 0 : pmayValuesFiltered.size();

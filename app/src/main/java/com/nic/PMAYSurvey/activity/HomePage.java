@@ -60,6 +60,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     public static SQLiteDatabase db;
     private String isHome;
     private SearchView searchView;
+    private ArrayList<PMAYSurvey> PmayList = new ArrayList<>();
 
     private List<PMAYSurvey> Village = new ArrayList<>();
     JSONObject savePMAYDataSet = new JSONObject();
@@ -83,6 +84,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             isHome = bundle.getString("Home");
         }
         initRecyclerView();
+        homeAdapter = new HomeAdapter(HomePage.this, PmayList,dbData);
+        recyclerView.setAdapter(homeAdapter);
         homeScreenBinding.villageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -113,7 +116,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
-        syncButtonVisibility();
+        //syncButtonVisibility();
 
     }
 
@@ -122,18 +125,18 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         @Override
         protected ArrayList<PMAYSurvey> doInBackground(Void... params) {
             dbData.open();
-            ArrayList<PMAYSurvey> pmaySurveys = new ArrayList<>();
-            pmaySurveys = dbData.getAll_PMAYList(prefManager.getPvCode());
+            PmayList = new ArrayList<>();
+            PmayList = dbData.getAll_PMAYList(prefManager.getPvCode());
             Log.d("PVCODE", String.valueOf(prefManager.getPvCode()));
-            Log.d("PMAY_COUNT", String.valueOf(pmaySurveys.size()));
-            return pmaySurveys;
+            Log.d("PMAY_COUNT", String.valueOf(PmayList.size()));
+            return PmayList;
         }
 
         @Override
         protected void onPostExecute(ArrayList<PMAYSurvey> pmaySurveys) {
             super.onPostExecute(pmaySurveys);
             recyclerView.setVisibility(View.VISIBLE);
-            homeAdapter = new HomeAdapter(HomePage.this, pmaySurveys);
+            homeAdapter = new HomeAdapter(HomePage.this, PmayList,dbData);
             recyclerView.setAdapter(homeAdapter);
 
 
@@ -198,73 +201,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void toUpload() {
         if (Utils.isOnline()) {
-            new toUploadTask().execute();
+          //  new toUploadTask().execute();
         } else {
             Utils.showAlert(this, "Please Turn on Your Mobile Data to Upload");
-        }
-    }
-
-    public class toUploadTask extends AsyncTask<Void, Void,
-            JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            try {
-                dbData.open();
-                ArrayList<PMAYSurvey> pmayLists = dbData.getSavedPMAYList();
-                JSONArray savePMAYArray = new JSONArray();
-                if (pmayLists.size() > 0) {
-                    for (int i = 0; i < pmayLists.size(); i++) {
-                        JSONObject pmaySaveJson = new JSONObject();
-                        JSONObject pmayImage = new JSONObject();
-
-                        JSONArray imageArray = new JSONArray(2);
-
-                        pmaySaveJson.put(AppConstant.DISTRICT_CODE, pmayLists.get(i).getDistictCode());
-                        pmaySaveJson.put(AppConstant.BLOCK_CODE, pmayLists.get(i).getBlockCode());
-                        pmaySaveJson.put(AppConstant.PV_CODE, pmayLists.get(i).getPvCode());
-                        pmaySaveJson.put(AppConstant.HAB_CODE, pmayLists.get(i).getHabCode());
-
-                        pmaySaveJson.put(AppConstant.SECC_ID, pmayLists.get(i).getSeccId());
-
-                        Bitmap bitmap = pmayLists.get(i).getImage();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-                        byte[] imageInByte = baos.toByteArray();
-                        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-
-                        pmayImage = new JSONObject();
-
-
-                        pmayImage.put(AppConstant.TYPE_OF_PHOTO, pmayLists.get(i).getTypeOfPhoto());
-                        pmayImage.put(AppConstant.KEY_LATITUDE, pmayLists.get(i).getLatitude());
-                        pmayImage.put(AppConstant.KEY_LONGITUDE, pmayLists.get(i).getLongitude());
-                        pmayImage.put(AppConstant.KEY_IMAGE, image_str);
-
-                        imageArray.put(pmayImage);
-
-                        pmaySaveJson.put(AppConstant.IMAGES, imageArray);
-
-                        savePMAYArray.put(pmaySaveJson);
-                    }
-                }
-
-                savePMAYDataSet = new JSONObject();
-                try {
-                    savePMAYDataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.PMAY_SOURCE_SAVE);
-                    savePMAYDataSet.put(AppConstant.KEY_TRACK_DATA, savePMAYArray);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return savePMAYDataSet;
-        }
-
-        protected void onPostExecute(JSONObject dataset) {
-            super.onPostExecute(dataset);
-            syncData();
         }
     }
 
@@ -325,37 +264,38 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         }
     }
 
-    public void syncButtonVisibility() {
-        dbData.open();
-        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
-
-        if (ImageCount.size() > 0) {
-            homeScreenBinding.sync.setVisibility(View.VISIBLE);
-
-        } else {
-            homeScreenBinding.sync.setVisibility(View.GONE);
-
-        }
-    }
+//    public void syncButtonVisibility() {
+//        dbData.open();
+//        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
+//
+//        if (ImageCount.size() > 0) {
+//            homeScreenBinding.sync.setVisibility(View.VISIBLE);
+//
+//        } else {
+//            homeScreenBinding.sync.setVisibility(View.GONE);
+//
+//        }
+//    }
 
     public void logout() {
         dbData.open();
-        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
-        if (!Utils.isOnline()) {
-            Utils.showAlert(this, "Logging out while offline may leads to loss of data!");
-        } else {
-            if (!(ImageCount.size() > 0)) {
-                closeApplication();
-            } else {
-                Utils.showAlert(this, "Sync all the data before logout!");
-            }
-        }
+//        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
+//        if (!Utils.isOnline()) {
+//            Utils.showAlert(this, "Logging out while offline may leads to loss of data!");
+//        } else {
+//            if (!(ImageCount.size() > 0)) {
+//                closeApplication();
+//            } else {
+//                Utils.showAlert(this, "Sync all the data before logout!");
+//            }
+//        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        syncButtonVisibility();
+        homeAdapter.notifyDataSetChanged();
+     //   syncButtonVisibility();
     }
 
 
@@ -377,7 +317,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     Utils.showAlert(this, "Your Image is saved");
 //                    dbData.open();
 //                    dbData.deleteSavedActivity();
-                    syncButtonVisibility();
+                    //syncButtonVisibility();
                 }
                 Log.d("savedImage", "" + responseDecryptedBlockKey);
             }

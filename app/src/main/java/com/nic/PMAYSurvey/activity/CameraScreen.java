@@ -44,6 +44,7 @@ import com.nic.PMAYSurvey.constant.AppConstant;
 import com.nic.PMAYSurvey.dataBase.DBHelper;
 import com.nic.PMAYSurvey.dataBase.dbData;
 import com.nic.PMAYSurvey.databinding.CameraScreenBinding;
+import com.nic.PMAYSurvey.model.PMAYSurvey;
 import com.nic.PMAYSurvey.session.PrefManager;
 import com.nic.PMAYSurvey.support.MyLocationListener;
 import com.nic.PMAYSurvey.utils.CameraUtils;
@@ -119,6 +120,16 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     public void saveActivityImage() {
         dbData.open();
+
+        long id = 0; String whereClause = "";String[] whereArgs = null;
+        String type_of_photo = getIntent().getStringExtra(AppConstant.TYPE_OF_PHOTO);
+        Log.d("type_of_photo",type_of_photo);
+        String habcode = getIntent().getStringExtra(AppConstant.HAB_CODE);
+        String secc_id = getIntent().getStringExtra(AppConstant.SECC_ID);
+        String dcode = prefManager.getDistrictCode();
+        String bcode = prefManager.getBlockCode();
+        String pvcode = prefManager.getPvCode();
+
         byte[] imageInByte = new byte[0];
         String image_str = "";
         try {
@@ -139,12 +150,52 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             values.put(AppConstant.KEY_LONGITUDE, offlongTextValue.toString());
             values.put(AppConstant.KEY_IMAGE, image_str.trim());
 
+            if(type_of_photo.equals("2")){
+                dbData.open();
+                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(dcode,bcode,pvcode,habcode,secc_id,"1");
+
+                if (imageOffline.size() > 0){
+                    for (int i= 0; i<imageOffline.size(); i++){
+                        Double latitude = Double.valueOf(imageOffline.get(i).getLatitude());
+                        Double longitude = Double.valueOf(imageOffline.get(i).getLongitude());
+                        Log.d("latitude :"+latitude,"longitude :"+longitude);
+
+                        float[] results = new float[1];
+                        Location.distanceBetween(latitude, longitude, offlatTextValue, offlongTextValue, results);
+                        float distanceInMeters = results[0];
+                        boolean isWithin10m = distanceInMeters < 0.01;
+                        Log.d("isWithin10m", String.valueOf(isWithin10m));
+
+                        if(isWithin10m){
+                            continue;
+                        }
+                        else {
+                            Utils.showAlert(this,"Capturing must be within 10 metres");
+                            return;
+                        }
+                    }
+                }
+            }
+//            else {
+//                Utils.showAlert(this,"afdfd");
+//            }
+
 //            float[] results = new float[1];
 //            Location.distanceBetween(centerLatitude, centerLongitude, offlatTextValue.toString(), offlongTextValue.toString(), results);
 //            float distanceInMeters = results[0];
 //            boolean isWithin10m = distanceInMeters < 0.01;
 
-            long id = db.insert(DBHelper.SAVE_PMAY_IMAGES, null, values);
+                whereClause = "dcode = ? and bcode = ? and pvcode = ? and habcode = ? and secc_id = ? and type_of_photo = ?";
+                whereArgs = new String[]{dcode,bcode,pvcode,habcode,secc_id,type_of_photo};dbData.open();
+                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(dcode,bcode,pvcode,habcode,secc_id,type_of_photo);
+
+                if(imageOffline.size() < 1) {
+                    id = db.insert(DBHelper.SAVE_PMAY_IMAGES, null, values);
+                }
+                else {
+                    id = db.update(DBHelper.SAVE_PMAY_IMAGES, values, whereClause, whereArgs);
+                }
+
 
             if (id > 0) {
                 Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();

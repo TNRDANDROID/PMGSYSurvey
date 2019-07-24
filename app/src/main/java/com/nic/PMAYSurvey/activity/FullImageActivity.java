@@ -39,7 +39,7 @@ import java.util.ArrayList;
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
     private FullImageRecyclerBinding fullImageRecyclerBinding;
-    public String OnOffType,work_id;
+    public String OnOffType;
     private FullImageAdapter fullImageAdapter;
     private PrefManager prefManager;
     private static  ArrayList<PMAYSurvey> activityImage = new ArrayList<>();
@@ -78,19 +78,16 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
             final String dcode = prefManager.getDistrictCode();
             final String bcode = prefManager.getBlockCode();
-            final String pvcode = prefManager.getPvCode();
-            String type_of_work = "", cd_work_no = "";
+            final String pvcode = getIntent().getStringExtra(AppConstant.PV_CODE);
+            final String habcode = getIntent().getStringExtra(AppConstant.HAB_CODE);
+            final String secc_id = getIntent().getStringExtra(AppConstant.SECC_ID);
 
-//            if(OnOffType.equalsIgnoreCase("Offline")){
-//                type_of_work = getIntent().getStringExtra(AppConstant.TYPE_OF_WORK);
-//
-//                if (type_of_work.equalsIgnoreCase(AppConstant.ADDITIONAL_WORK)){
-//                    cd_work_no = getIntent().getStringExtra(AppConstant.CD_WORK_NO);
-//                }
-//                dbData.open();
-//                activityImage = new ArrayList<>();
-//                activityImage = dbData.selectImage(dcode,bcode,pvcode,work_id,type_of_work,cd_work_no);
-//            }
+
+            if(OnOffType.equalsIgnoreCase("Offline")){
+                dbData.open();
+                activityImage = new ArrayList<>();
+                activityImage = dbData.getSavedPMAYList(dcode,bcode,pvcode,habcode,secc_id,"");
+            }
 
             Log.d("IMAGE_COUNT", String.valueOf(activityImage.size()));
             return activityImage;
