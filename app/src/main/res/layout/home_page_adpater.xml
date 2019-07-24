@@ -21,9 +21,10 @@
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="@dimen/_5sdp"
-            android:layout_marginBottom="-15dp"
             android:clipToPadding="false"
             android:elevation="0dp"
+            android:layout_marginBottom="-5dp"
+            card_view:cardElevation="5dp"
             card_view:cardCornerRadius="10dp"
             card_view:cardUseCompatPadding="false"
             card_view:paddingEnd="0dp"
@@ -133,10 +134,11 @@
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
+                            android:layout_height="1.5dp"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="15dp"
-                            android:background="@color/dashboard_line_dark" />
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/background"/>
 
 
                         <LinearLayout
@@ -210,10 +212,11 @@
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
+                            android:layout_height="1.5dp"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="15dp"
-                            android:background="@color/dashboard_line_dark" />
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/background" />
 
                         <RelativeLayout
                             android:id="@+id/start_activity"
@@ -230,7 +233,7 @@
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="4"
+                                    android:layout_weight="3"
                                     android:gravity="center"
                                     android:orientation="vertical">
 
@@ -280,7 +283,7 @@
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="4"
+                                    android:layout_weight="3"
                                     android:gravity="center"
                                     android:orientation="vertical">
 
@@ -322,7 +325,7 @@
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="4"
+                                    android:layout_weight="3"
                                     android:gravity="center"
                                     android:orientation="vertical">
 
@@ -371,10 +374,11 @@
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
+                            android:layout_height="1.5dp"
                             android:layout_gravity="bottom"
                             android:layout_marginLeft="15dp"
-                            android:background="@color/dashboard_line_dark" />
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/background" />
 
 
                         <RelativeLayout
