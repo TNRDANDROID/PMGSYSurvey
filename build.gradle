@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.2'
         
-        // NOTE: Do not place your com.nic.PMGSYSurvey.application dependencies here; they belong
+        // NOTE: Do not place your com.nic.PMAYSurvey.application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }

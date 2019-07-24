@@ -3,6 +3,7 @@ package com.nic.PMAYSurvey.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,16 +11,17 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -38,15 +40,21 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.api.Api;
 import com.nic.PMAYSurvey.api.ServerResponse;
+import com.nic.PMAYSurvey.constant.AppConstant;
+import com.nic.PMAYSurvey.dataBase.DBHelper;
+import com.nic.PMAYSurvey.dataBase.dbData;
 import com.nic.PMAYSurvey.databinding.CameraScreenBinding;
 import com.nic.PMAYSurvey.session.PrefManager;
 import com.nic.PMAYSurvey.support.MyLocationListener;
 import com.nic.PMAYSurvey.utils.CameraUtils;
 import com.nic.PMAYSurvey.utils.Utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
@@ -60,23 +68,20 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     private static final int PERMISSION_REQUEST_CODE = 200;
     private static String imageStoragePath;
     public static final int BITMAP_SAMPLE_SIZE = 8;
-    ImageView imageView, image_view_preview;
     LocationManager mlocManager = null;
     LocationListener mlocListener;
     Double offlatTextValue, offlongTextValue;
     private PrefManager prefManager;
     private CameraScreenBinding cameraScreenBinding;
-    private ImageView back_img,home_img;
+
 
     private List<View> viewArrayList = new ArrayList<>();
 
 
-    Button btn_save;
-
-//    public static DBHelper dbHelper;
+    public static DBHelper dbHelper;
     public static SQLiteDatabase db;
-//    private dbData dbData = new dbData(this);
-     private EditText description;
+    private dbData dbData = new dbData(this);
+
 
 
 
@@ -86,8 +91,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         cameraScreenBinding = DataBindingUtil.setContentView(this, R.layout.camera_screen);
         cameraScreenBinding.setActivity(this);
         try {
-//            dbHelper = new DBHelper(this);
-//            db = dbHelper.getWritableDatabase();
+            dbHelper = new DBHelper(this);
+            db = dbHelper.getWritableDatabase();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,50 +103,61 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
-        imageView = (ImageView) findViewById(R.id.image_view);
-        image_view_preview = (ImageView) findViewById(R.id.image_view_preview);
-
-        description = (EditText) findViewById(R.id.description);
-        btn_save = (Button) findViewById(R.id.btn_save);
-
-        back_img = (ImageView) findViewById(R.id.back_img);
-        home_img = (ImageView) findViewById(R.id.home_img);
 
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
-        image_view_preview.setOnClickListener(this);
-        imageView.setOnClickListener(this);
-        back_img.setOnClickListener(this);
-        home_img.setOnClickListener(this);
-        btn_save.setOnClickListener(this);
-
 
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.image_view_preview:
-//                getLatLong();
-//                break;
-//            case R.id.image_view:
-//                getLatLong();
-//                break;
-//            case R.id.back_img:
-//                onBackPress();
-//                break;
-//            case R.id.home_img:
-//                homePage();
-//                break;
-//            case R.id.btn_save:
-////                saveActivityImage();
-//                break;
 
         }
     }
 
 
+    public void saveActivityImage() {
+        dbData.open();
+        byte[] imageInByte = new byte[0];
+        String image_str = "";
+        try {
+            Bitmap bitmap = ((BitmapDrawable) cameraScreenBinding.imageView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            imageInByte = baos.toByteArray();
+            image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
+            ContentValues values = new ContentValues();
+            values.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+            values.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+            values.put(AppConstant.PV_CODE, prefManager.getPvCode());
+            values.put(AppConstant.HAB_CODE, getIntent().getStringExtra(AppConstant.HAB_CODE));
+            values.put(AppConstant.SECC_ID, getIntent().getStringExtra(AppConstant.SECC_ID));
+            values.put(AppConstant.TYPE_OF_PHOTO, getIntent().getStringExtra(AppConstant.TYPE_OF_PHOTO));
+            values.put(AppConstant.KEY_LATITUDE, offlatTextValue.toString());
+            values.put(AppConstant.KEY_LONGITUDE, offlongTextValue.toString());
+            values.put(AppConstant.KEY_IMAGE, image_str.trim());
+
+//            float[] results = new float[1];
+//            Location.distanceBetween(centerLatitude, centerLongitude, offlatTextValue.toString(), offlongTextValue.toString(), results);
+//            float distanceInMeters = results[0];
+//            boolean isWithin10m = distanceInMeters < 0.01;
+
+            long id = db.insert(DBHelper.SAVE_PMAY_IMAGES, null, values);
+
+            if (id > 0) {
+                Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
+                super.onBackPressed();
+                overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+            }
+            Log.d("insIdsavePMAY", String.valueOf(id));
+
+        } catch (Exception e) {
+            Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
+            //e.printStackTrace();
+        }
+    }
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -256,8 +272,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         try {
             // hide video preview
             Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
-            image_view_preview.setVisibility(View.GONE);
-            imageView.setVisibility(View.VISIBLE);
+            cameraScreenBinding.imageViewPreview.setVisibility(View.GONE);
+            cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
             Matrix mtx = new Matrix();
             // As Front camera is Mirrored so Fliping the Orientation
 
@@ -269,7 +285,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             Log.d("buildversion",""+ Build.VERSION.SDK_INT);
             Log.d("buildversion",""+ Build.VERSION_CODES.N);
             bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mtx, true);
-            imageView.setImageBitmap(bitmap);
+            cameraScreenBinding.imageView.setImageBitmap(bitmap);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

@@ -168,6 +168,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
                 android:background="@drawable/button_background"
+                android:onClick="@{()-> activity.saveActivityImage()}"
                 android:text="SAVE IMAGE"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white" />

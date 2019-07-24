@@ -59,7 +59,16 @@ public class PMAYSurvey {
     private String PvName;
 
     private String blockName;
-    private String type;
+
+    public String getTypeOfPhoto() {
+        return typeOfPhoto;
+    }
+
+    public void setTypeOfPhoto(String typeOfPhoto) {
+        this.typeOfPhoto = typeOfPhoto;
+    }
+
+    private String typeOfPhoto;
     private String imageRemark;
     private String dateTime;
     private String imageAvailable;
@@ -74,13 +83,7 @@ public class PMAYSurvey {
         this.imageAvailable = imageAvailable;
     }
 
-    public String getType() {
-        return type;
-    }
 
-    public void setType(String pointType) {
-        this.type = pointType;
-    }
 
     public String getImageRemark() {
         return imageRemark;

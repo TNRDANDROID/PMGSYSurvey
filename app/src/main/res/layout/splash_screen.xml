@@ -38,7 +38,7 @@
             android:gravity="center_horizontal"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="PMGSY Survey"
+            android:text="PMAY Survey"
             android:textColor="@android:color/white"
             android:textSize="@dimen/_15sdp" />
 

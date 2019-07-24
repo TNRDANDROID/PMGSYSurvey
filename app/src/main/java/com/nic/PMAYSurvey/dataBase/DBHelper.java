@@ -9,10 +9,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "PMAYSurvey";
     private static final int DATABASE_VERSION = 1;
 
-    public static final String DISTRICT_TABLE_NAME = "DistrictTable";
-    public static final String BLOCK_TABLE_NAME = " BlockTable";
+
     public static final String VILLAGE_TABLE_NAME = " villageTable";
     public static final String PMAY_LIST_TABLE_NAME = "PMAYList";
+    public static final String SAVE_PMAY_IMAGES = "SavePMAYImages";
 
     private Context context;
 
@@ -25,14 +25,6 @@ public class DBHelper extends SQLiteOpenHelper {
     //creating tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + DISTRICT_TABLE_NAME + " ("
-                + "dcode INTEGER," +
-                "dname TEXT)");
-
-        db.execSQL("CREATE TABLE " + BLOCK_TABLE_NAME + " ("
-                + "dcode INTEGER," +
-                "bcode INTEGER," +
-                "bname TEXT)");
 
         db.execSQL("CREATE TABLE " + VILLAGE_TABLE_NAME + " ("
                 + "dcode INTEGER," +
@@ -47,6 +39,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 "secc_id  TEXT," +
                 "habitation_name TEXT)");
 
+        db.execSQL("CREATE TABLE " + SAVE_PMAY_IMAGES + " ("
+                + "dcode TEXT," +
+                "bcode TEXT," +
+                "pvcode TEXT," +
+                "habcode TEXT," +
+                "secc_id TEXT," +
+                "image BLOB," +
+                "latitude TEXT," +
+                "longitude TEXT," +
+                "type_of_photo TEXT)");
+
 
     }
 
@@ -54,12 +57,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion >= newVersion) {
             //drop table if already exists
-            db.execSQL("DROP TABLE IF EXISTS " + DISTRICT_TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + BLOCK_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + VILLAGE_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + PMAY_LIST_TABLE_NAME);
-
-
+            db.execSQL("DROP TABLE IF EXISTS " + SAVE_PMAY_IMAGES);
             onCreate(db);
         }
     }

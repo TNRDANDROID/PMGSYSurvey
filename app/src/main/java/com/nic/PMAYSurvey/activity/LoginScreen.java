@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -292,7 +293,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         prefManager.setUserPassKey(decryptedKey);
                         getVillageList();
                         getPMAYList();
-                        showHomeScreen();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                showHomeScreen();
+                            }
+                        }, 1000);
+
                     } else {
                         if (response.equals("LOGIN_FAILED")) {
                             Utils.showAlert(this, "Invalid UserName Or Password");

@@ -55,7 +55,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginRight="15dp"
                         android:adjustViewBounds="true"
-                        android:onClick="@{()-> activity.closeApplication()}"
+                        android:onClick="@{()-> activity.logout()}"
                         android:scaleType="centerInside"
                         android:src="@mipmap/log_out" />
 
@@ -199,7 +199,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_18sdp"
                     android:layout_below="@+id/habitation_tv"
-                    android:layout_alignParentBottom="true"
                     android:fadeScrollbars="false"
                     android:scrollbarSize="4dp"
                     android:scrollbars="vertical"
@@ -210,14 +209,31 @@
                     android:id="@+id/not_found_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="@dimen/_230sdp"
+                    android:layout_below="@+id/pmay_list"
                     android:text="No Projects Found!"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_16sdp"
                     android:textStyle="bold"
                     android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/sync"
+                    android:layout_width="110dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:layout_below="@+id/not_found_tv"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true"
+                    android:padding="8dp"
+                    android:text="Sync Data"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/_14sdp"
+                    android:onClick="@{()-> activity.toUpload()}"
+                    android:background="@drawable/button_background"
+                    android:visibility="gone"
+                    style="@string/font_circular_medium" />
             </RelativeLayout>
         </androidx.core.widget.NestedScrollView>
 

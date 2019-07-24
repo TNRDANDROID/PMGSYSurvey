@@ -7,8 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -28,6 +30,7 @@ import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.adapter.CommonAdapter;
 import com.nic.PMAYSurvey.adapter.HomeAdapter;
 import com.nic.PMAYSurvey.api.Api;
+import com.nic.PMAYSurvey.api.ApiService;
 import com.nic.PMAYSurvey.api.ServerResponse;
 import com.nic.PMAYSurvey.constant.AppConstant;
 import com.nic.PMAYSurvey.dataBase.DBHelper;
@@ -36,10 +39,15 @@ import com.nic.PMAYSurvey.databinding.HomeScreenBinding;
 import com.nic.PMAYSurvey.dialog.MyDialog;
 import com.nic.PMAYSurvey.model.PMAYSurvey;
 import com.nic.PMAYSurvey.session.PrefManager;
+import com.nic.PMAYSurvey.utils.UrlGenerator;
 import com.nic.PMAYSurvey.utils.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
@@ -54,7 +62,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private SearchView searchView;
 
     private List<PMAYSurvey> Village = new ArrayList<>();
-
+    JSONObject savePMAYDataSet = new JSONObject();
 
     String pref_Block, pref_Village;
 
@@ -74,9 +82,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         if (bundle != null) {
             isHome = bundle.getString("Home");
         }
-        if (Utils.isOnline() && !isHome.equalsIgnoreCase("Home")) {
-            fetchAllResponseFromApi();
-        }
         initRecyclerView();
         homeScreenBinding.villageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,8 +90,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
                     pref_Village = Village.get(position).getPvName();
                     prefManager.setVillageListPvName(pref_Village);
-                    prefManager.setKeySpinnerSelectedPvcode(Village.get(position).getPvCode());
-
+                    prefManager.setPvCode(Village.get(position).getPvCode());
                     new fetchScheduletask().execute();
 
                 }
@@ -109,7 +113,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
-
+        syncButtonVisibility();
 
     }
 
@@ -119,8 +123,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         protected ArrayList<PMAYSurvey> doInBackground(Void... params) {
             dbData.open();
             ArrayList<PMAYSurvey> pmaySurveys = new ArrayList<>();
-            pmaySurveys = dbData.getAll_PMAYList(prefManager.getKeySpinnerSelectedPVcode());
-            Log.d("PVCODE", String.valueOf(prefManager.getKeySpinnerSelectedPVcode()));
+            pmaySurveys = dbData.getAll_PMAYList(prefManager.getPvCode());
+            Log.d("PVCODE", String.valueOf(prefManager.getPvCode()));
             Log.d("PMAY_COUNT", String.valueOf(pmaySurveys.size()));
             return pmaySurveys;
         }
@@ -192,12 +196,94 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
-
-    public void fetchAllResponseFromApi() {
-
+    public void toUpload() {
+        if (Utils.isOnline()) {
+            new toUploadTask().execute();
+        } else {
+            Utils.showAlert(this, "Please Turn on Your Mobile Data to Upload");
+        }
     }
 
+    public class toUploadTask extends AsyncTask<Void, Void,
+            JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            try {
+                dbData.open();
+                ArrayList<PMAYSurvey> pmayLists = dbData.getSavedPMAYList();
+                JSONArray savePMAYArray = new JSONArray();
+                if (pmayLists.size() > 0) {
+                    for (int i = 0; i < pmayLists.size(); i++) {
+                        JSONObject pmaySaveJson = new JSONObject();
+                        JSONObject pmayImage = new JSONObject();
 
+                        JSONArray imageArray = new JSONArray(2);
+
+                        pmaySaveJson.put(AppConstant.DISTRICT_CODE, pmayLists.get(i).getDistictCode());
+                        pmaySaveJson.put(AppConstant.BLOCK_CODE, pmayLists.get(i).getBlockCode());
+                        pmaySaveJson.put(AppConstant.PV_CODE, pmayLists.get(i).getPvCode());
+                        pmaySaveJson.put(AppConstant.HAB_CODE, pmayLists.get(i).getHabCode());
+
+                        pmaySaveJson.put(AppConstant.SECC_ID, pmayLists.get(i).getSeccId());
+
+                        Bitmap bitmap = pmayLists.get(i).getImage();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                        byte[] imageInByte = baos.toByteArray();
+                        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+                        pmayImage = new JSONObject();
+
+
+                        pmayImage.put(AppConstant.TYPE_OF_PHOTO, pmayLists.get(i).getTypeOfPhoto());
+                        pmayImage.put(AppConstant.KEY_LATITUDE, pmayLists.get(i).getLatitude());
+                        pmayImage.put(AppConstant.KEY_LONGITUDE, pmayLists.get(i).getLongitude());
+                        pmayImage.put(AppConstant.KEY_IMAGE, image_str);
+
+                        imageArray.put(pmayImage);
+
+                        pmaySaveJson.put(AppConstant.IMAGES, imageArray);
+
+                        savePMAYArray.put(pmaySaveJson);
+                    }
+                }
+
+                savePMAYDataSet = new JSONObject();
+                try {
+                    savePMAYDataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.PMAY_SOURCE_SAVE);
+                    savePMAYDataSet.put(AppConstant.KEY_TRACK_DATA, savePMAYArray);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return savePMAYDataSet;
+        }
+
+        protected void onPostExecute(JSONObject dataset) {
+            super.onPostExecute(dataset);
+            syncData();
+        }
+    }
+
+    public void syncData() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("savePMAYImages", Api.Method.POST, UrlGenerator.getPMAYListUrl(), savePMAYImagesJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject savePMAYImagesJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), savePMAYDataSet.toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("savePMAYImages", "" + authKey);
+        return dataSet;
+    }
 
 
 
@@ -235,26 +321,42 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.log_out:
-//                dbData.open();
-//                ArrayList<ODFMonitoringListValue> activityCount = dbData.getSavedActivity();
-                if (!Utils.isOnline()) {
-                    Utils.showAlert(this, "Logging out while offline may leads to loss of data!");
-                } else {
-//                    if (!(activityCount.size() > 0 )) {
-//                        closeApplication();
-//                    }else{
-//                        Utils.showAlert(this,"Sync all the data before logout!");
-//                    }
-                    closeApplication();
-                }
-                break;
+
         }
-
-
     }
 
+    public void syncButtonVisibility() {
+        dbData.open();
+        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
 
+        if (ImageCount.size() > 0) {
+            homeScreenBinding.sync.setVisibility(View.VISIBLE);
+
+        } else {
+            homeScreenBinding.sync.setVisibility(View.GONE);
+
+        }
+    }
+
+    public void logout() {
+        dbData.open();
+        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
+        if (!Utils.isOnline()) {
+            Utils.showAlert(this, "Logging out while offline may leads to loss of data!");
+        } else {
+            if (!(ImageCount.size() > 0)) {
+                closeApplication();
+            } else {
+                Utils.showAlert(this, "Sync all the data before logout!");
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        syncButtonVisibility();
+    }
 
 
 
@@ -263,8 +365,26 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
 
+        try {
+            String urlType = serverResponse.getApi();
+            JSONObject responseObj = serverResponse.getJsonResponse();
 
+            if ("savePMAYImages".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this, "Your Image is saved");
+//                    dbData.open();
+//                    dbData.deleteSavedActivity();
+                    syncButtonVisibility();
+                }
+                Log.d("savedImage", "" + responseDecryptedBlockKey);
+            }
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 

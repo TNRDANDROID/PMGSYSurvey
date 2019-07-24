@@ -3,9 +3,7 @@ package com.nic.PMAYSurvey.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -13,12 +11,14 @@ import android.widget.Filterable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.activity.CameraScreen;
+import com.nic.PMAYSurvey.activity.FullImageActivity;
+import com.nic.PMAYSurvey.constant.AppConstant;
 import com.nic.PMAYSurvey.databinding.HomePageAdpaterBinding;
 import com.nic.PMAYSurvey.model.PMAYSurvey;
+import com.nic.PMAYSurvey.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,21 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 //                .buildRound(letter, generator.getRandomColor());
 //
 //        holder.homePageAdpaterBinding.beneficiaryName.setBackgroundDrawable(drawable);
-        holder.homePageAdpaterBinding.cardView.setOnClickListener(view -> viewCamera(position));
+        holder.homePageAdpaterBinding.startLayout.setOnClickListener(view ->
+
+                viewCamera(position, "1"));
+
+        holder.homePageAdpaterBinding.endLayout.setOnClickListener(view ->
+
+                viewCamera(position, "2"));
+
+        holder.homePageAdpaterBinding.viewOnlineImages.setOnClickListener(view ->
+
+                viewOfflineImages(position, "Online"));
+
+        holder.homePageAdpaterBinding.viewOfflineImages.setOnClickListener(view ->
+
+                viewOfflineImages(position, "Offline"));
     }
 
 
@@ -111,13 +125,37 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         };
     }
 
-    public void viewCamera(int pos) {
+    public void viewCamera(int pos, String type_of_photo) {
         Activity activity = (Activity) context;
         Intent intent = new Intent(activity, CameraScreen.class);
+        intent.putExtra(AppConstant.TYPE_OF_PHOTO, type_of_photo);
+        intent.putExtra(AppConstant.SECC_ID, pmayValuesFiltered.get(pos).getSeccId());
+        intent.putExtra(AppConstant.HAB_CODE, pmayValuesFiltered.get(pos).getHabCode());
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
+    public void viewOfflineImages(int position, String OnOffType) {
+        Activity activity = (Activity) context;
+        Intent intent = new Intent(context, FullImageActivity.class);
+
+        intent.putExtra("OnOffType", OnOffType);
+
+        if (OnOffType.equalsIgnoreCase("Offline")) {
+
+            activity.startActivity(intent);
+        } else if (OnOffType.equalsIgnoreCase("Online")) {
+            if (Utils.isOnline()) {
+                activity.startActivity(intent);
+            } else {
+                Utils.showAlert(activity, "Your Internet seems to be Offline.Images can be viewed only in Online mode.");
+            }
+        }
+
+
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
+    }
     @Override
     public int getItemCount() {
         return pmayValuesFiltered == null ? 0 : pmayValuesFiltered.size();

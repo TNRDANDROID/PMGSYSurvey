@@ -1157,14 +1157,7 @@ public class Utils {
         return dataSet;
     }
 
-    public static JSONObject blockListDistrictWiseJsonParams(Activity activity) throws JSONException {
-        prefManager = new PrefManager(activity);
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_BLOCK_LIST_DISTRICT_WISE);
-        dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
-        Log.d("blockListDistrictWise", "" + dataSet);
-        return dataSet;
-    }
+
 
     public static JSONObject villageListDistrictBlockWiseJsonParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
@@ -1176,40 +1169,6 @@ public class Utils {
         return dataSet;
     }
 
-    public static JSONObject schemeFinyearListJsonParams() throws JSONException {
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_FINYEAR_LIST_LAST_NYEARS);
-        dataSet.put(AppConstant.N_YEAR, 6);
-        Log.d("object", "" + dataSet);
-        return dataSet;
-    }
 
-    public static JSONObject stageListJsonParams() throws JSONException {
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.STAGE_LIST);
-        Log.d("object", "" + dataSet);
-        return dataSet;
-    }
-
-    public static JSONObject schemeListBlockWiseJsonParams(Activity activity) throws JSONException {
-        prefManager = new PrefManager(activity);
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_SCHEME_LIST_DISTRICT_FINYEAR_WISE);
-        dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
-        Log.d("objectschemeLis", "" + dataSet);
-        return dataSet;
-    }
-
-    public static JSONObject workListBlockWiseJsonParams(Activity activity) throws JSONException {
-        prefManager = new PrefManager(activity);
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.WORK_LIST_BASED_ON_FINYEAR_VILLAGE);
-        dataSet.put(AppConstant.FINANCIAL_YEAR, prefManager.getFinancialyearName());
-        dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
-        dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
-        dataSet.put(AppConstant.PV_CODE, prefManager.getPvCode());
-        Log.d("objectworkLis", "" + dataSet);
-        return dataSet;
-    }
 
 }

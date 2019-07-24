@@ -33,26 +33,23 @@ public class AppConstant {
     public static String BLOCK_NAME = "bname";
     public static String PV_NAME = "pvname";
     public static String DESIG_NAME = "desig_name";
-    public static String N_YEAR = "nyear";
-    public static String KEY_SCHEME_FINYEAR_LIST_LAST_NYEARS = "scheme_finyear_list_last_nyears";
-    public static String STAGE_LIST = "work_type_stage_link";
-    public static String FINANCIAL_YEAR = "fin_year";
 
-    public static String KEY_SCHEME_LIST_DISTRICT_FINYEAR_WISE = "scheme_list_district_finyear_wise";
-    public static String KEY_SCHEME_SEQUENTIAL_ID = "scheme_seq_id";
-    public static String KEY_SCHEME_NAME = "scheme_name";
 
     public static String KEY_MOTIVATOR_SCHEDULE = "motivator_schedule";
 
 
     public static String KEY_VILLAGE_LIST_DISTRICT_BLOCK_WISE = "village_list_district_block_wise";
-    public static String KEY_BLOCK_LIST_DISTRICT_WISE = "block_list_district_wise";
-
-    public static String WORK_LIST_BASED_ON_FINYEAR_VILLAGE = "finyear_village_wise_work_list";
 
     public static String BENEFICIARY_NAME = "beneficiary_name";
     public static String HABITATION_NAME = "habitation_name";
     public static String SECC_ID = "secc_id";
+    public static String TYPE_OF_PHOTO = "type_of_photo";
+    public static String IMAGES = "images";
+    public static String KEY_LATITUDE = "latitude";
+    public static String KEY_LONGITUDE = "longitude";
+    public static String KEY_IMAGE = "image";
+    public static String PMAY_SOURCE_SAVE = "pmay_source_save";
+    public static String KEY_TRACK_DATA = "track_data";
 
 
 
