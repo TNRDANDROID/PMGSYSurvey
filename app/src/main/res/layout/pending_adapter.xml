@@ -19,10 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:layout_marginEnd="@dimen/_5sdp"
             android:clipToPadding="false"
-            android:elevation="0dp"
+            android:elevation="5dp"
             card_view:cardCornerRadius="10dp"
             card_view:cardUseCompatPadding="false"
             card_view:paddingEnd="0dp"
@@ -65,7 +66,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:background="@drawable/background"
+                            android:background="@drawable/top_curve_background"
                             android:orientation="horizontal"
                             android:visibility="gone">
 
@@ -391,7 +392,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:background="@drawable/background_curve"
+                            android:background="@drawable/bottom_curve_background"
                             android:orientation="horizontal">
 
                             <TextView
