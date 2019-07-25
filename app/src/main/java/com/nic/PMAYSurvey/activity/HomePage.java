@@ -5,11 +5,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.SearchView;
 
@@ -18,12 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.android.volley.VolleyError;
-import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.adapter.CommonAdapter;
-import com.nic.PMAYSurvey.adapter.HomeAdapter;
 import com.nic.PMAYSurvey.api.Api;
-import com.nic.PMAYSurvey.api.ApiService;
 import com.nic.PMAYSurvey.api.ServerResponse;
 import com.nic.PMAYSurvey.constant.AppConstant;
 import com.nic.PMAYSurvey.dataBase.DBHelper;
@@ -32,10 +30,8 @@ import com.nic.PMAYSurvey.databinding.HomeScreenBinding;
 import com.nic.PMAYSurvey.dialog.MyDialog;
 import com.nic.PMAYSurvey.model.PMAYSurvey;
 import com.nic.PMAYSurvey.session.PrefManager;
-import com.nic.PMAYSurvey.utils.UrlGenerator;
 import com.nic.PMAYSurvey.utils.Utils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,21 +40,17 @@ import java.util.List;
 
 public class HomePage extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener, MyDialog.myOnClickListener {
     private HomeScreenBinding homeScreenBinding;
-    private ShimmerRecyclerView recyclerView;
-    private HomeAdapter homeAdapter;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
     private String isHome;
-    private SearchView searchView;
-    private ArrayList<PMAYSurvey> PmayList = new ArrayList<>();
-
+    Handler myHandler = new Handler();
     private List<PMAYSurvey> Village = new ArrayList<>();
     private List<PMAYSurvey> Habitation = new ArrayList<>();
-    JSONObject savePMAYDataSet = new JSONObject();
 
-    String pref_Block, pref_Village;
+
+    String pref_Village;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,7 +103,16 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
             }
         });
+        homeScreenBinding.takePicLayout.setAlpha(0);
+        final Runnable pmgsy = new Runnable() {
+            @Override
+            public void run() {
+                homeScreenBinding.takePicLayout.setAlpha(1);
+                homeScreenBinding.takePicLayout.startAnimation(AnimationUtils.loadAnimation(HomePage.this, R.anim.text_view_move_right));
 
+            }
+        };
+        myHandler.postDelayed(pmgsy, 1500);
 
     }
 
@@ -290,9 +291,33 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         }
     }
 
-    public void viewCamera(Integer type_of_photo) {
-        Intent intent = new Intent(this, CameraScreen.class);
-        intent.putExtra(AppConstant.TYPE_OF_PHOTO, type_of_photo);
+    public void validateFields() {
+        if (!"Select Village".equalsIgnoreCase(Village.get(homeScreenBinding.villageSpinner.getSelectedItemPosition()).getPvName())) {
+            if (!"Select Habitation".equalsIgnoreCase(Habitation.get(homeScreenBinding.habitationSpinner.getSelectedItemPosition()).getHabitationName())) {
+                if (!homeScreenBinding.name.getText().toString().isEmpty()) {
+                    if (!homeScreenBinding.fatherName.getText().toString().isEmpty()) {
+                        if (!homeScreenBinding.seecId.getText().toString().isEmpty()) {
+                            takePhoto();
+                        } else {
+                            Utils.showAlert(this, "Enter the  Seec Id!");
+                        }
+                    } else {
+                        Utils.showAlert(this, "Enter the Father Name!");
+                    }
+                } else {
+                    Utils.showAlert(this, "Enter the Name!");
+                }
+            } else {
+                Utils.showAlert(this, "Select Habitation!");
+            }
+        } else {
+            Utils.showAlert(this, "Select Village!");
+        }
+
+    }
+
+    public void takePhoto() {
+        Intent intent = new Intent(this, TakePhotoScreen.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
