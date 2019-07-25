@@ -28,6 +28,15 @@ public class PMAYSurvey {
     private String BeneficiaryName;
     private String HabitationName;
     private String pmayId;
+    private String fatherName;
+
+    public String getFatherName() {
+        return fatherName;
+    }
+
+    public void setFatherName(String fatherName) {
+        this.fatherName = fatherName;
+    }
 
     public String getPmayId() {
         return pmayId;

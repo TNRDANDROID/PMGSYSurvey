@@ -54,9 +54,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 "bcode TEXT," +
                 "pvcode TEXT," +
                 "habcode TEXT," +
+                "pvname TEXT," +
+                "habitation_name TEXT," +
                 "secc_id TEXT," +
                 "beneficiary_name TEXT," +
-                "father_name TEXT)");
+                "beneficiary_father_name TEXT)");
 
 
         db.execSQL("CREATE TABLE " + SAVE_PMAY_IMAGES + " ("

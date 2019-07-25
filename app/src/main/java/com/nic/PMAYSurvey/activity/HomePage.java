@@ -116,6 +116,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         };
         myHandler.postDelayed(pmgsy, 1500);
 
+
+        syncButtonVisibility();
+
     }
 
 
@@ -201,19 +204,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         }
     }
 
-//    public void syncButtonVisibility() {
-//        dbData.open();
-//        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
-//
-//        if (ImageCount.size() > 0) {
-//            homeScreenBinding.sync.setVisibility(View.VISIBLE);
-//
-//        } else {
-//            homeScreenBinding.sync.setVisibility(View.GONE);
-//
-//        }
-//    }
-
     public void logout() {
         dbData.open();
 //        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
@@ -231,6 +221,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     @Override
     protected void onResume() {
         super.onResume();
+        syncButtonVisibility();
     }
 
 
@@ -330,8 +321,10 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         registerValue.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
         registerValue.put(AppConstant.PV_CODE, pvcode);
         registerValue.put(AppConstant.HAB_CODE, habcode);
+        registerValue.put(AppConstant.PV_NAME, Village.get(homeScreenBinding.villageSpinner.getSelectedItemPosition()).getPvName());
+        registerValue.put(AppConstant.HABITATION_NAME, Habitation.get(homeScreenBinding.habitationSpinner.getSelectedItemPosition()).getHabitationName());
         registerValue.put(AppConstant.BENEFICIARY_NAME, beneficiary_name);
-        registerValue.put(AppConstant.FATHER_NAME, father_name);
+        registerValue.put(AppConstant.BENEFICIARY_FATHER_NAME, father_name);
         registerValue.put(AppConstant.SECC_ID, secc_id);
 
         long id = db.insert(DBHelper.SAVE_PMAY_DETAILS, null, registerValue);
@@ -355,6 +348,25 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         }
     }
+
+    public void syncButtonVisibility() {
+        dbData.open();
+        ArrayList<PMAYSurvey> workImageCount = dbData.getSavedPMAYDetails();
+
+        if (workImageCount.size() > 0) {
+            homeScreenBinding.synData.setVisibility(View.VISIBLE);
+        }else {
+            homeScreenBinding.synData.setVisibility(View.GONE);
+        }
+    }
+
+    public void openPendingScreen() {
+        Intent intent = new Intent(this, PendingScreen.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+
+
 
 
 }

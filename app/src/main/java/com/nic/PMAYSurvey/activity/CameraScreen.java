@@ -148,7 +148,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
             if(type_of_photo.equals("2")){
                 dbData.open();
-                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(pmay_id,"1");
+                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYImages(pmay_id,"1");
 
                 if (imageOffline.size() > 0){
                     for (int i= 0; i<imageOffline.size(); i++){
@@ -172,18 +172,10 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-//            else {
-//                Utils.showAlert(this,"afdfd");
-//            }
-
-//            float[] results = new float[1];
-//            Location.distanceBetween(centerLatitude, centerLongitude, offlatTextValue.toString(), offlongTextValue.toString(), results);
-//            float distanceInMeters = results[0];
-//            boolean isWithin10m = distanceInMeters < 0.01;
 
                 whereClause = "pmay_id = ? and type_of_photo = ?";
                 whereArgs = new String[]{pmay_id,type_of_photo};dbData.open();
-                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(pmay_id,type_of_photo);
+                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYImages(pmay_id,type_of_photo);
 
                 if(imageOffline.size() < 1) {
                     id = db.insert(DBHelper.SAVE_PMAY_IMAGES, null, values);
@@ -197,6 +189,11 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
                 super.onBackPressed();
                 overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+
+                if(type_of_photo.equals("2")){
+                    Intent intent = new Intent(this,HomePage.class);
+                    startActivity(intent);
+                }
             }
             Log.d("insIdsavePMAY", String.valueOf(id));
 

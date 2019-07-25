@@ -39,7 +39,6 @@ import java.util.ArrayList;
 
 public class FullImageActivity extends AppCompatActivity implements View.OnClickListener, Api.ServerResponseListener {
     private FullImageRecyclerBinding fullImageRecyclerBinding;
-    public String OnOffType;
     private FullImageAdapter fullImageAdapter;
     private PrefManager prefManager;
     private static  ArrayList<PMAYSurvey> activityImage = new ArrayList<>();
@@ -50,7 +49,6 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         fullImageRecyclerBinding = DataBindingUtil.setContentView(this, R.layout.full_image_recycler);
         fullImageRecyclerBinding.setActivity(this);
         prefManager = new PrefManager(this);
-        OnOffType = getIntent().getStringExtra("OnOffType");
 //        work_id = getIntent().getStringExtra(AppConstant.WORK_ID);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
@@ -60,15 +58,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         fullImageRecyclerBinding.imagePreviewRecyclerview.setNestedScrollingEnabled(false);
         fullImageRecyclerBinding.imagePreviewRecyclerview.setFocusable(false);
         fullImageRecyclerBinding.imagePreviewRecyclerview.setAdapter(fullImageAdapter);
+        new fetchImagetask().execute();
 
-        if(OnOffType.equalsIgnoreCase("Online")) {
-            if (Utils.isOnline()) {
-//                getOnlineImage();
-            }
-        }
-        else {
-            new fetchImagetask().execute();
-        }
 
     }
     public class fetchImagetask extends AsyncTask<Void, Void,
@@ -76,18 +67,12 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         @Override
         protected ArrayList<PMAYSurvey> doInBackground(Void... params) {
 
-            final String dcode = prefManager.getDistrictCode();
-            final String bcode = prefManager.getBlockCode();
-            final String pvcode = getIntent().getStringExtra(AppConstant.PV_CODE);
-            final String habcode = getIntent().getStringExtra(AppConstant.HAB_CODE);
-            final String secc_id = getIntent().getStringExtra(AppConstant.SECC_ID);
+            final String pmay_id = getIntent().getStringExtra(AppConstant.PMAY_ID);
 
+            dbData.open();
+            activityImage = new ArrayList<>();
+            activityImage = dbData.getSavedPMAYImages(pmay_id,"");
 
-            if(OnOffType.equalsIgnoreCase("Offline")){
-                dbData.open();
-                activityImage = new ArrayList<>();
-                activityImage = dbData.getSavedPMAYList(secc_id,"");
-            }
 
             Log.d("IMAGE_COUNT", String.valueOf(activityImage.size()));
             return activityImage;

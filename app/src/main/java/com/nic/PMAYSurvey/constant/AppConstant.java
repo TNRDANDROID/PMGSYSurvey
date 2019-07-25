@@ -43,11 +43,10 @@ public class AppConstant {
     public static String KEY_HABITATION_LIST_DISTRICT_BLOCK_WISE = "habitation_list_district_block_wise";
 
     public static String BENEFICIARY_NAME = "beneficiary_name";
-    public static String FATHER_NAME = "father_name";
+    public static String BENEFICIARY_FATHER_NAME = "beneficiary_father_name";
     public static String HABITATION_NAME = "habitation_name";
     public static String SECC_ID = "secc_id";
     public static String TYPE_OF_PHOTO = "type_of_photo";
-    public static String IMAGES = "images";
     public static String KEY_LATITUDE = "latitude";
     public static String KEY_LONGITUDE = "longitude";
     public static String KEY_IMAGE = "image";

@@ -34,7 +34,7 @@ public class TakePhotoScreen extends AppCompatActivity {
 
         if(type_of_photo == 2){
             dbData.open();
-            ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(getIntent().getStringExtra("lastInsertedID"),"1");
+            ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYImages(getIntent().getStringExtra("lastInsertedID"),"1");
 
             if (!(imageOffline.size() > 0)){
                 Utils.showAlert(this,"Please Capture Start Photo");

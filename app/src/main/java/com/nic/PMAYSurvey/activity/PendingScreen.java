@@ -61,7 +61,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
-//        new fetchPendingtask().execute();
+        new fetchPendingtask().execute();
     }
 
 
@@ -72,8 +72,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         protected ArrayList<PMAYSurvey> doInBackground(Void... params) {
             dbData.open();
             ArrayList<PMAYSurvey> pmaySurveys = new ArrayList<>();
-            pmaySurveys = dbData.getAll_PMAYList(prefManager.getPvCode());
-            Log.d("PVCODE", String.valueOf(prefManager.getPvCode()));
+            pmaySurveys = dbData.getSavedPMAYDetails();
             Log.d("PMAY_COUNT", String.valueOf(pmaySurveys.size()));
             return pmaySurveys;
         }
