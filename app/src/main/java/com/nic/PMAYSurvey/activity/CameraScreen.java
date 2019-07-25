@@ -82,6 +82,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
     private dbData dbData = new dbData(this);
+    String pmay_id;
 
 
 
@@ -108,6 +109,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
 
+        pmay_id = getIntent().getStringExtra("lastInsertedID");
+
     }
 
     @Override
@@ -124,11 +127,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         long id = 0; String whereClause = "";String[] whereArgs = null;
         String type_of_photo = getIntent().getStringExtra(AppConstant.TYPE_OF_PHOTO);
         Log.d("type_of_photo",type_of_photo);
-        String habcode = getIntent().getStringExtra(AppConstant.HAB_CODE);
-        String secc_id = getIntent().getStringExtra(AppConstant.SECC_ID);
-        String dcode = prefManager.getDistrictCode();
-        String bcode = prefManager.getBlockCode();
-        String pvcode = prefManager.getPvCode();
+
 
         byte[] imageInByte = new byte[0];
         String image_str = "";
@@ -140,11 +139,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
             ContentValues values = new ContentValues();
-            values.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
-            values.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
-            values.put(AppConstant.PV_CODE, prefManager.getPvCode());
-            values.put(AppConstant.HAB_CODE, getIntent().getStringExtra(AppConstant.HAB_CODE));
-            values.put(AppConstant.SECC_ID, getIntent().getStringExtra(AppConstant.SECC_ID));
+
+            values.put(AppConstant.PMAY_ID, pmay_id);
             values.put(AppConstant.TYPE_OF_PHOTO, getIntent().getStringExtra(AppConstant.TYPE_OF_PHOTO));
             values.put(AppConstant.KEY_LATITUDE, offlatTextValue.toString());
             values.put(AppConstant.KEY_LONGITUDE, offlongTextValue.toString());
@@ -152,7 +148,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
             if(type_of_photo.equals("2")){
                 dbData.open();
-                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(dcode,bcode,pvcode,habcode,secc_id,"1");
+                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(pmay_id,"1");
 
                 if (imageOffline.size() > 0){
                     for (int i= 0; i<imageOffline.size(); i++){
@@ -185,9 +181,9 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 //            float distanceInMeters = results[0];
 //            boolean isWithin10m = distanceInMeters < 0.01;
 
-                whereClause = "dcode = ? and bcode = ? and pvcode = ? and habcode = ? and secc_id = ? and type_of_photo = ?";
-                whereArgs = new String[]{dcode,bcode,pvcode,habcode,secc_id,type_of_photo};dbData.open();
-                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(dcode,bcode,pvcode,habcode,secc_id,type_of_photo);
+                whereClause = "pmay_id = ? and type_of_photo = ?";
+                whereArgs = new String[]{pmay_id,type_of_photo};dbData.open();
+                ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYList(pmay_id,type_of_photo);
 
                 if(imageOffline.size() < 1) {
                     id = db.insert(DBHelper.SAVE_PMAY_IMAGES, null, values);

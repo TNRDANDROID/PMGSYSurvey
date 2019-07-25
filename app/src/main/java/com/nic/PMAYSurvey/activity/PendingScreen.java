@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.nic.PMAYSurvey.R;
-import com.nic.PMAYSurvey.adapter.HomeAdapter;
 import com.nic.PMAYSurvey.adapter.PendingAdapter;
 import com.nic.PMAYSurvey.api.Api;
 import com.nic.PMAYSurvey.api.ApiService;

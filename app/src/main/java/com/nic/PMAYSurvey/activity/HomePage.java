@@ -2,6 +2,7 @@ package com.nic.PMAYSurvey.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -48,6 +49,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     Handler myHandler = new Handler();
     private List<PMAYSurvey> Village = new ArrayList<>();
     private List<PMAYSurvey> Habitation = new ArrayList<>();
+    String lastInsertedID;
 
 
     String pref_Village;
@@ -296,7 +298,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             if (!"Select Habitation".equalsIgnoreCase(Habitation.get(homeScreenBinding.habitationSpinner.getSelectedItemPosition()).getHabitationName())) {
                 if (!homeScreenBinding.name.getText().toString().isEmpty()) {
                     if (!homeScreenBinding.fatherName.getText().toString().isEmpty()) {
-                        if (!homeScreenBinding.seecId.getText().toString().isEmpty()) {
+                        if (!homeScreenBinding.seccId.getText().toString().isEmpty()) {
                             takePhoto();
                         } else {
                             Utils.showAlert(this, "Enter the  Seec Id!");
@@ -317,8 +319,42 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     }
 
     public void takePhoto() {
-        Intent intent = new Intent(this, TakePhotoScreen.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        String pvcode = Village.get(homeScreenBinding.villageSpinner.getSelectedItemPosition()).getPvCode();
+        String habcode = Habitation.get(homeScreenBinding.habitationSpinner.getSelectedItemPosition()).getHabCode();
+        String beneficiary_name = homeScreenBinding.name.getText().toString();
+        String father_name = homeScreenBinding.fatherName.getText().toString();
+        String secc_id = homeScreenBinding.seccId.getText().toString();
+
+        ContentValues registerValue = new ContentValues();
+        registerValue.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+        registerValue.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+        registerValue.put(AppConstant.PV_CODE, pvcode);
+        registerValue.put(AppConstant.HAB_CODE, habcode);
+        registerValue.put(AppConstant.BENEFICIARY_NAME, beneficiary_name);
+        registerValue.put(AppConstant.FATHER_NAME, father_name);
+        registerValue.put(AppConstant.SECC_ID, secc_id);
+
+        long id = db.insert(DBHelper.SAVE_PMAY_DETAILS, null, registerValue);
+
+        if(id > 0) {
+
+            Cursor cursor = db.rawQuery("SELECT MAX(id) FROM " + DBHelper.SAVE_PMAY_DETAILS, null);
+            Log.d("cursor_count", String.valueOf(cursor.getCount()));
+            if (cursor.getCount() > 0) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        lastInsertedID = String.valueOf(cursor.getInt(0));
+                        Log.d("lastID", "" + lastInsertedID);
+                    } while (cursor.moveToNext());
+                }
+            }
+
+            Intent intent = new Intent(this, TakePhotoScreen.class);
+            intent.putExtra("lastInsertedID",lastInsertedID);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        }
     }
+
+
 }

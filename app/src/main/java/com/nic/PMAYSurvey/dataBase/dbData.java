@@ -196,7 +196,7 @@ public class dbData {
         return cards;
     }
 
-    public ArrayList<PMAYSurvey> getSavedPMAYList(String dcode,String bcode, String pvcode,String habcode,String secc_id,String type_of_photo) {
+    public ArrayList<PMAYSurvey> getSavedPMAYList(String pmay_id,String type_of_photo) {
 
         ArrayList<PMAYSurvey> cards = new ArrayList<>();
         Cursor cursor = null;
@@ -204,12 +204,12 @@ public class dbData {
         String[] selectionArgs = null;
 
         if(!type_of_photo.isEmpty()){
-            selection = "dcode = ? and bcode = ? and pvcode = ? and habcode = ? and secc_id = ? and type_of_photo = ? ";
-            selectionArgs = new String[]{dcode,bcode,pvcode,habcode,secc_id,type_of_photo};
+            selection = "pmay_id = ? and type_of_photo = ? ";
+            selectionArgs = new String[]{pmay_id,type_of_photo};
         }
         else {
-            selection = "dcode = ? and bcode = ? and pvcode = ? and habcode = ? and secc_id = ?";
-            selectionArgs = new String[]{dcode,bcode,pvcode,habcode,secc_id};
+            selection = "pmay_id = ? ";
+            selectionArgs = new String[]{pmay_id};
         }
 
 
@@ -225,18 +225,9 @@ public class dbData {
 
                     PMAYSurvey card = new PMAYSurvey();
 
-                    card.setDistictCode(cursor.getString(cursor
-                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
-                    card.setBlockCode(cursor.getString(cursor
-                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
-                    card.setPvCode(cursor.getString(cursor
-                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
-                    card.setHabCode(cursor.getString(cursor
-                            .getColumnIndexOrThrow(AppConstant.HAB_CODE)));
 
-                    card.setSeccId(cursor.getString(cursor
-                            .getColumnIndexOrThrow(AppConstant.SECC_ID)));
-
+                    card.setPmayId(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PMAY_ID)));
                     card.setTypeOfPhoto(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.TYPE_OF_PHOTO)));
                     card.setLatitude(cursor.getString(cursor

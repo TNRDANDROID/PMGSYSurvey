@@ -86,7 +86,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             if(OnOffType.equalsIgnoreCase("Offline")){
                 dbData.open();
                 activityImage = new ArrayList<>();
-                activityImage = dbData.getSavedPMAYList(dcode,bcode,pvcode,habcode,secc_id,"");
+                activityImage = dbData.getSavedPMAYList(secc_id,"");
             }
 
             Log.d("IMAGE_COUNT", String.valueOf(activityImage.size()));

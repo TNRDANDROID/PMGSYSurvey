@@ -43,6 +43,7 @@ public class AppConstant {
     public static String KEY_HABITATION_LIST_DISTRICT_BLOCK_WISE = "habitation_list_district_block_wise";
 
     public static String BENEFICIARY_NAME = "beneficiary_name";
+    public static String FATHER_NAME = "father_name";
     public static String HABITATION_NAME = "habitation_name";
     public static String SECC_ID = "secc_id";
     public static String TYPE_OF_PHOTO = "type_of_photo";
@@ -52,6 +53,7 @@ public class AppConstant {
     public static String KEY_IMAGE = "image";
     public static String PMAY_SOURCE_SAVE = "pmay_source_save";
     public static String KEY_TRACK_DATA = "track_data";
+    public static String PMAY_ID = "pmay_id";
 
 
 

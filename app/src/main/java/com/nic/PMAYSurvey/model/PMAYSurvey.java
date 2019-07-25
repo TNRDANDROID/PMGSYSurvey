@@ -27,6 +27,16 @@ public class PMAYSurvey {
     private String Latitude;
     private String BeneficiaryName;
     private String HabitationName;
+    private String pmayId;
+
+    public String getPmayId() {
+        return pmayId;
+    }
+
+    public void setPmayId(String pmayId) {
+        this.pmayId = pmayId;
+    }
+
 
     public String getBeneficiaryName() {
         return BeneficiaryName;
