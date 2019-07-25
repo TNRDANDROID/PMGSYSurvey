@@ -8,24 +8,18 @@
             type="com.nic.PMAYSurvey.activity.HomePage" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:customfontdemo="http://schemas.android.com/tools"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:orientation="vertical">
-
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/background"
                 app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -64,19 +58,20 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-        </com.google.android.material.appbar.AppBarLayout>
+
 
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <RelativeLayout
+                android:id="@+id/parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
 
@@ -91,7 +86,7 @@
                     android:text="Select Village"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
-                    customfontdemo:fontName="@string/font_circular_bold" />
+                    style="@string/font_circular_bold" />
 
                 <RelativeLayout
                     android:id="@+id/village_layout"
@@ -115,7 +110,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        style="@string/font_normal" />
 
                     <Spinner
                         android:id="@+id/village_spinner"
@@ -141,7 +136,7 @@
                     android:text="Select Habitation"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
-                    customfontdemo:fontName="@string/font_circular_bold" />
+                    style="@string/font_circular_bold" />
 
                 <RelativeLayout
                     android:id="@+id/hab_layout"
@@ -165,7 +160,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_normal" />
+                        style="@string/font_normal" />
 
                     <Spinner
                         android:id="@+id/habitation_spinner"
@@ -197,7 +192,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_circular_medium" />
+                        style="@string/font_circular_medium" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -223,7 +218,7 @@
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/_15sdp"
 
-                            customfontdemo:fontName="@string/font_circular_book" />
+                            style="@string/font_circular_book" />
 
 
                     </RelativeLayout>
@@ -248,7 +243,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
-                        customfontdemo:fontName="@string/font_circular_medium" />
+                        style="@string/font_circular_medium" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -274,7 +269,7 @@
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/_15sdp"
 
-                            customfontdemo:fontName="@string/font_circular_book" />
+                            style="@string/font_circular_book" />
 
 
                     </RelativeLayout>
@@ -299,7 +294,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="visible"
-                    customfontdemo:fontName="@string/font_circular_medium" />
+                    style="@string/font_circular_medium" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -325,7 +320,7 @@
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/_15sdp"
 
-                            customfontdemo:fontName="@string/font_circular_book" />
+                            style="@string/font_circular_book" />
 
 
                     </RelativeLayout>
@@ -347,16 +342,15 @@
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
                     android:visibility="gone"
-                    customfontdemo:fontName="@string/font_circular_medium" />
+                    style="@string/font_circular_medium" />
                 <LinearLayout
                     android:id="@+id/take_pic_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_35sdp"
                     android:layout_below="@+id/seec_id_layout"
                     android:layout_alignParentRight="true"
                     android:onClick="@{()-> activity.validateFields()}"
-                    android:layout_marginTop="@dimen/_35sdp"
+                    android:layout_marginTop="@dimen/_25sdp"
                     android:background="@drawable/white_background_left_two_corners"
                     android:orientation="horizontal"
                     android:padding="@dimen/_5sdp">
@@ -371,21 +365,22 @@
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:textStyle="normal"
-                        customfontdemo:fontName="@string/font_normal" />
+                        style="@string/font_normal" />
 
                 </LinearLayout>
 
+
                 <RelativeLayout
-                    android:id="@+id/end_activity"
-                    android:layout_width="match_parent"
+                    android:id="@+id/syn_data"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/view_pic_tv"
+                    android:layout_below="@+id/take_pic_layout"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginLeft="@dimen/margin_left_20dp"
                     android:layout_marginTop="@dimen/padding"
-                    android:layout_marginBottom="@dimen/padding"
                     android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:visibility="gone"
-                    android:background="@drawable/rectangle_box">
+                    android:background="@drawable/rectangle_box"
+                    android:visibility="gone">
 
 
                     <TextView
@@ -396,33 +391,46 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:padding="@dimen/_12sdp"
-                        android:text="View Offline Images"
-                        android:textColor="#000080"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/view_online_images"
-                        style="@string/font_circular_bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:padding="@dimen/_12sdp"
-                        android:text="View Images"
+                        android:padding="@dimen/_10sdp"
+                        android:text="Syn Data"
                         android:textColor="#000080"
                         android:textSize="16sp" />
 
 
                 </RelativeLayout>
 
+                <TextView
+                    android:id="@+id/empty"
+                    style="@string/font_circular_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/syn_data"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:padding="8dp"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_14sdp" />
+
+                <TextView
+                    style="@string/font_circular_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/empty"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:padding="8dp"
+                    android:text="Sofware Designed &amp; Developed by NIC"
+                    android:textAlignment="center"
+                    android:textColor="#7535AD"
+                    android:textSize="@dimen/_14sdp" />
 
 
             </RelativeLayout>
+
         </androidx.core.widget.NestedScrollView>
 
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </RelativeLayout>
 </layout>
