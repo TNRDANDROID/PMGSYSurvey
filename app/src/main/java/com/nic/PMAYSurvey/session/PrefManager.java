@@ -57,6 +57,7 @@ public class PrefManager {
     private static final String IMEI = "imei";
     private static final String MOTIVATOR_ID = "motivator_id";
     private static final String SCHEDULE_MASTER_ID = "schedule_master_id";
+    private static final String KEY_DELETE_ID = "deleteId";
 
 
     public PrefManager(Context context) {
@@ -101,6 +102,15 @@ public class PrefManager {
 
     public void setUserAuthKey(String userAuthKey) {
         editor.putString(KEY_USER_AUTH_KEY, userAuthKey);
+        editor.commit();
+    }
+
+    public String getKeyDeleteId() {
+        return pref.getString(KEY_DELETE_ID,null);
+    }
+
+    public void setKeyDeleteId(String deleteId) {
+        editor.putString(KEY_DELETE_ID,deleteId);
         editor.commit();
     }
 
