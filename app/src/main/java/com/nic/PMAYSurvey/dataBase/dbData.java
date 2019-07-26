@@ -53,13 +53,13 @@ public class dbData {
 
         return pmgsySurvey;
     }
-    public ArrayList<PMAYSurvey > getAll_Village() {
+    public ArrayList<PMAYSurvey > getAll_Village(String dcode,String bcode) {
 
         ArrayList<PMAYSurvey > cards = new ArrayList<>();
         Cursor cursor = null;
 
         try {
-            cursor = db.rawQuery("select * from "+DBHelper.VILLAGE_TABLE_NAME+" order by pvname asc",null);
+            cursor = db.rawQuery("select * from "+DBHelper.VILLAGE_TABLE_NAME+" where dcode = "+dcode+" and bcode = "+bcode+" order by pvname asc",null);
             // cursor = db.query(CardsDBHelper.TABLE_CARDS,
             //       COLUMNS, null, null, null, null, null);
             if (cursor.getCount() > 0) {
@@ -101,13 +101,13 @@ public class dbData {
 
         return pmgsySurvey;
     }
-    public ArrayList<PMAYSurvey > getAll_Habitation() {
+    public ArrayList<PMAYSurvey > getAll_Habitation(String dcode,String bcode) {
 
         ArrayList<PMAYSurvey > cards = new ArrayList<>();
         Cursor cursor = null;
 
         try {
-            cursor = db.rawQuery("select * from "+DBHelper.HABITATION_TABLE_NAME+" order by habitation_name asc",null);
+            cursor = db.rawQuery("select * from "+DBHelper.HABITATION_TABLE_NAME+" where dcode = "+dcode+" and bcode = "+bcode+" order by habitation_name asc",null);
             // cursor = db.query(CardsDBHelper.TABLE_CARDS,
             //       COLUMNS, null, null, null, null, null);
             if (cursor.getCount() > 0) {

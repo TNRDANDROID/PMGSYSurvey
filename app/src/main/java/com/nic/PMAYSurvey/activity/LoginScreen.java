@@ -366,7 +366,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         @Override
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
-            ArrayList<PMAYSurvey> villagelist_count = dbData.getAll_Village();
+            ArrayList<PMAYSurvey> villagelist_count = dbData.getAll_Village(prefManager.getDistrictCode(),prefManager.getBlockCode());
             if (villagelist_count.size() <= 0) {
                 if (params.length > 0) {
                     JSONArray jsonArray = new JSONArray();
@@ -402,7 +402,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         @Override
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
-            ArrayList<PMAYSurvey> hablist_count = dbData.getAll_Habitation();
+            ArrayList<PMAYSurvey> hablist_count = dbData.getAll_Habitation(prefManager.getDistrictCode(),prefManager.getBlockCode());
             if (hablist_count.size() <= 0) {
                 if (params.length > 0) {
                     JSONArray jsonArray = new JSONArray();
