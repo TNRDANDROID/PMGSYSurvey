@@ -72,7 +72,7 @@ public class TakePhotoScreen extends AppCompatActivity {
         }
         else
         {
-            Utils.showAlert(this,"Missing End Photo. Please,Capture it");
+            Utils.showAlert(this,"Missing Photo. Please,Capture it");
         }
 
 
@@ -88,7 +88,7 @@ public class TakePhotoScreen extends AppCompatActivity {
         }
         else
         {
-            Utils.showAlert(this,"Missing End Photo. Please,Capture it");
+            Utils.showAlert(this,"Missing Photo. Please,Capture it");
         }
 
     }

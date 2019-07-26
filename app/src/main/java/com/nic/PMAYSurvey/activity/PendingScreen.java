@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
 
 public class PendingScreen extends AppCompatActivity implements Api.ServerResponseListener {
     public PendingScreenBinding pendingScreenBinding;
@@ -135,6 +138,13 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     pendingAdapter.notifyDataSetChanged();
 
                     Utils.showAlert(this, "Uploaded");
+                }
+                else if(jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL") && jsonObject.getString("MESSAGE").equalsIgnoreCase("SECC ID ALREADY EXISTS")){
+                    db.delete(DBHelper.SAVE_PMAY_DETAILS,"id = ?",new String[] {prefManager.getKeyDeleteId()});
+                    db.delete(DBHelper.SAVE_PMAY_IMAGES, "pmay_id = ? ", new String[]{prefManager.getKeyDeleteId()});
+                    pendingAdapter.notifyItemRemoved(prefManager.getKeyDeletePosition());
+                    pendingAdapter.notifyDataSetChanged();
+                    Toasty.error(this, "Your Entered Secc Id is Already Exists!", Toast.LENGTH_LONG, true).show();
                 }
                 Log.d("saved_response", "" + responseDecryptedBlockKey);
             }

@@ -180,7 +180,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
-                        android:text="REMEMBER ME" />
+                        android:text="REMEMBER ME"
+                        android:visibility="gone"/>
 
                     <ImageButton
                         android:id="@+id/signin"

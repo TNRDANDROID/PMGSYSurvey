@@ -24,7 +24,7 @@
             android:layout_marginEnd="@dimen/_5sdp"
             android:clipToPadding="false"
             android:elevation="5dp"
-            card_view:cardCornerRadius="10dp"
+            card_view:cardCornerRadius="11dp"
             card_view:cardUseCompatPadding="false"
             card_view:paddingEnd="0dp"
             card_view:paddingStart="0dp">

@@ -58,6 +58,7 @@ public class PrefManager {
     private static final String MOTIVATOR_ID = "motivator_id";
     private static final String SCHEDULE_MASTER_ID = "schedule_master_id";
     private static final String KEY_DELETE_ID = "deleteId";
+    private static final String KEY_DELETE_POSITION = "deletePosition";
 
 
     public PrefManager(Context context) {
@@ -111,6 +112,15 @@ public class PrefManager {
 
     public void setKeyDeleteId(String deleteId) {
         editor.putString(KEY_DELETE_ID,deleteId);
+        editor.commit();
+    }
+
+    public Integer getKeyDeletePosition() {
+        return pref.getInt(KEY_DELETE_POSITION,0);
+    }
+
+    public void setKeyDeletePosition(Integer deletePos) {
+        editor.putInt(KEY_DELETE_POSITION,deletePos);
         editor.commit();
     }
 

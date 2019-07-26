@@ -143,6 +143,7 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
         String secc_id = pendingListValues.get(position).getSeccId();
 
         String pmay_id = pendingListValues.get(position).getPmayId();
+        prefManager.setKeyDeletePosition(position);
         prefManager.setKeyDeleteId(pmay_id);
 
         try {

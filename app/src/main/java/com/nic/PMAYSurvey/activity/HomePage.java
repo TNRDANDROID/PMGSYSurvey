@@ -206,16 +206,16 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void logout() {
         dbData.open();
-//        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYList();
-//        if (!Utils.isOnline()) {
-//            Utils.showAlert(this, "Logging out while offline may leads to loss of data!");
-//        } else {
-//            if (!(ImageCount.size() > 0)) {
-//                closeApplication();
-//            } else {
-//                Utils.showAlert(this, "Sync all the data before logout!");
-//            }
-//        }
+        ArrayList<PMAYSurvey> ImageCount = dbData.getSavedPMAYDetails();
+        if (!Utils.isOnline()) {
+            Utils.showAlert(this, "Logging out while offline may leads to loss of data!");
+        } else {
+            if (!(ImageCount.size() > 0)) {
+                closeApplication();
+            } else {
+                Utils.showAlert(this, "Sync all the data before logout!");
+            }
+        }
     }
 
     @Override
