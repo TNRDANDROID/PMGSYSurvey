@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
@@ -40,7 +41,7 @@ import es.dmoral.toasty.Toasty;
 
 public class PendingScreen extends AppCompatActivity implements Api.ServerResponseListener {
     public PendingScreenBinding pendingScreenBinding;
-    private ShimmerRecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private PendingAdapter pendingAdapter;
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
@@ -86,24 +87,9 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
             recyclerView.setVisibility(View.VISIBLE);
             pendingAdapter = new PendingAdapter(PendingScreen.this, pmaySurveys);
             recyclerView.setAdapter(pendingAdapter);
-
-
-
-            recyclerView.showShimmerAdapter();
-            recyclerView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loadCards();
-                }
-            }, 1000);
         }
     }
 
-    private void loadCards() {
-
-        recyclerView.hideShimmerAdapter();
-
-    }
 
 
     public JSONObject savePMAYImagesJsonParams(JSONObject savePMAYDataSet) {
@@ -133,18 +119,18 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this, "Uploaded");
                     db.delete(DBHelper.SAVE_PMAY_DETAILS,"id = ?",new String[] {prefManager.getKeyDeleteId()});
                     db.delete(DBHelper.SAVE_PMAY_IMAGES, "pmay_id = ? ", new String[]{prefManager.getKeyDeleteId()});
+                    new fetchPendingtask().execute();
                     pendingAdapter.notifyDataSetChanged();
-
-                    Utils.showAlert(this, "Uploaded");
                 }
                 else if(jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL") && jsonObject.getString("MESSAGE").equalsIgnoreCase("SECC ID ALREADY EXISTS")){
+                    Toasty.error(this, "Your Entered Secc Id is Already Exists!", Toast.LENGTH_LONG, true).show();
                     db.delete(DBHelper.SAVE_PMAY_DETAILS,"id = ?",new String[] {prefManager.getKeyDeleteId()});
                     db.delete(DBHelper.SAVE_PMAY_IMAGES, "pmay_id = ? ", new String[]{prefManager.getKeyDeleteId()});
-                    pendingAdapter.notifyItemRemoved(prefManager.getKeyDeletePosition());
+                    new fetchPendingtask().execute();
                     pendingAdapter.notifyDataSetChanged();
-                    Toasty.error(this, "Your Entered Secc Id is Already Exists!", Toast.LENGTH_LONG, true).show();
                 }
                 Log.d("saved_response", "" + responseDecryptedBlockKey);
             }

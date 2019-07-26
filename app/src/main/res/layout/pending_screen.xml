@@ -39,6 +39,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
+                        android:layout_marginRight="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/margin"
                         android:text="Upload Data"
                         android:textColor="@android:color/white"
@@ -84,7 +85,7 @@
                 android:orientation="vertical">
 
 
-                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/pending_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,7 +93,6 @@
                     android:fadeScrollbars="false"
                     android:scrollbarSize="4dp"
                     android:scrollbars="vertical"
-                    app:shimmer_demo_shimmer_color="#8FFFFFFF"
                     android:visibility="gone"/>
 
                 <TextView
@@ -110,7 +110,18 @@
 
             </RelativeLayout>
         </androidx.core.widget.NestedScrollView>
-
+        <TextView
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentBottom="true"
+            android:padding="15dp"
+            android:text="Sofware Designed &amp; Developed by NIC"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_14sdp"
+            android:background="@drawable/background"
+            style="@string/font_circular_medium" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -98,7 +98,7 @@
                             <ImageView
                                 android:id="@+id/image_view_preview"
                                 android:layout_width="match_parent"
-                                android:layout_height="170dp"
+                                android:layout_height="190dp"
                                 android:background="@drawable/capture_image"
                                 android:onClick="@{()-> activity.getLatLong()}"
                                 android:scaleType="fitXY" />
@@ -106,7 +106,7 @@
                             <ImageView
                                 android:id="@+id/image_view"
                                 android:layout_width="match_parent"
-                                android:layout_height="170dp"
+                                android:layout_height="190dp"
                                 android:scaleType="fitXY"
                                 android:onClick="@{()-> activity.getLatLong()}"
                                 android:visibility="gone" />
@@ -175,6 +175,19 @@
         </RelativeLayout>
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/empty"
+        android:layout_alignParentBottom="true"
+        android:padding="15dp"
+        android:text="Sofware Designed &amp; Developed by NIC"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/_14sdp"
+        android:background="@drawable/background"
+        style="@string/font_circular_medium" />
 
 
 </RelativeLayout>

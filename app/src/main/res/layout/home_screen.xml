@@ -239,7 +239,7 @@
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:text="Enter Father Name"
+                        android:text="Enter Father/Spouse Name"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
@@ -263,7 +263,7 @@
                             android:layout_centerInParent="true"
                             android:layout_marginLeft="15dp"
                             android:background="@android:color/transparent"
-                            android:hint="Enter Father Name"
+                            android:hint="Enter Father/Spouse Name"
                             android:inputType="textPersonName"
                             android:singleLine="true"
                             android:textColor="@android:color/black"
@@ -306,13 +306,35 @@
                         android:orientation="vertical"
                         android:visibility="visible">
 
+                        <TextView
+                            android:id="@+id/tn"
+                            style="@string/font_circular_medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="@dimen/margin_left_20dp"
+                            android:text="TN"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/_15sdp"
+                            android:visibility="visible" />
+
+                        <View
+                            android:id="@+id/view"
+                            android:layout_width="1.5dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="bottom"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_toRightOf="@+id/tn"
+                            android:background="#7535AD" />
+
                         <EditText
                             android:id="@+id/secc_id"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
+                            android:layout_toEndOf="@+id/view"
                             android:layout_centerInParent="true"
-                            android:layout_marginLeft="15dp"
                             android:background="@android:color/transparent"
                             android:hint="Enter Seec Id"
                             android:inputType="number"
@@ -353,7 +375,7 @@
                     android:layout_marginTop="@dimen/_25sdp"
                     android:background="@drawable/white_background_left_two_corners"
                     android:orientation="horizontal"
-                    android:padding="@dimen/_5sdp">
+                    android:padding="@dimen/_8sdp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -378,7 +400,7 @@
                     android:layout_below="@+id/take_pic_layout"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/padding"
-                    android:background="@drawable/button_background"
+                    android:background="@drawable/rectangle_box"
                     android:visibility="gone">
 
 
@@ -394,7 +416,7 @@
                         android:text="Syn Data"
                         android:textStyle="bold"
                         android:textAllCaps="false"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/black"
                         android:textSize="17sp" />
 
 
@@ -415,17 +437,18 @@
                     android:textSize="@dimen/_14sdp" />
 
                 <TextView
-                    style="@string/font_circular_medium"
+                    android:id="@+id/save"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
                     android:layout_below="@+id/empty"
                     android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:padding="8dp"
+                    android:padding="15dp"
                     android:text="Sofware Designed &amp; Developed by NIC"
                     android:textAlignment="center"
-                    android:textColor="#7535AD"
-                    android:textSize="@dimen/_14sdp" />
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/_14sdp"
+                    android:background="@drawable/background"
+                    style="@string/font_circular_medium" />
 
 
             </RelativeLayout>

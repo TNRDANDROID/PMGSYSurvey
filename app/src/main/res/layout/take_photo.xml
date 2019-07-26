@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/margin"
-            android:text="Take Photo"
+            android:text="BeneFiciary Details"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -50,11 +50,11 @@
         android:id="@+id/take_pic_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_left_20dp"
+        android:layout_marginLeft="@dimen/_10sdp"
         android:layout_marginTop="@dimen/padding"
         android:layout_marginRight="@dimen/margin_left_20dp"
         android:layout_below="@+id/header_layout"
-        android:text="Take Photo"
+        android:text="BeneFiciary Details"
         android:textColor="@android:color/black"
         android:textSize="@dimen/_15sdp"
         android:visibility="visible"
@@ -65,15 +65,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/take_pic_tv"
-        android:layout_marginLeft="@dimen/margin_left_20dp"
-        android:layout_marginTop="@dimen/padding"
-        android:layout_marginRight="@dimen/margin_left_20dp"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_17sdp"
+
         android:background="@drawable/rectangle_box">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+android:padding="@dimen/_4sdp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -94,10 +95,9 @@
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/_12sdp"
-                        android:text="Start"
+                        android:text="Beneficiary \n Image"
                         android:textColor="#000080"
-
+                        android:textAlignment="center"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -126,7 +126,7 @@
             </LinearLayout>
 
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
@@ -163,7 +163,7 @@
                         android:text="Take Photo" />
 
                 </RelativeLayout>
-            </LinearLayout>
+            </LinearLayout>-->
 
 
             <LinearLayout
@@ -184,8 +184,8 @@
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/_12sdp"
-                        android:text="End"
+                        android:text="Existing House\n With Beneficiary  "
+                        android:textAlignment="center"
                         android:textColor="#000080"
 
                         android:textSize="16sp" />
@@ -219,19 +219,15 @@
     </RelativeLayout>
     <TextView
         android:id="@+id/save"
-        android:layout_width="160dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="@dimen/_80sdp"
-        android:layout_below="@+id/start_activity"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:padding="9dp"
-        android:text="Save Data Locally"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:padding="15dp"
+        android:text="Sofware Designed &amp; Developed by NIC"
         android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/_14sdp"
-        android:background="@drawable/rectangle_box"
-        android:visibility="gone"
+        android:background="@drawable/background"
         style="@string/font_circular_medium" />
 </RelativeLayout>
 

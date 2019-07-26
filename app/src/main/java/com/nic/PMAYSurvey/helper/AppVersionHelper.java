@@ -43,7 +43,7 @@ public class AppVersionHelper implements Api.ServerResponseListener {
         Map<String, String> params = new HashMap<>();
 
         params.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VERSION_CHECK);
-        params.put(AppConstant.KEY_APP_CODE, "I");
+        params.put(AppConstant.KEY_APP_CODE, "P");
 
         return params;
     }
@@ -66,7 +66,7 @@ public class AppVersionHelper implements Api.ServerResponseListener {
             if ("versionCheck".equals(urlType) && responseObj != null) {
                 String version = responseObj.getString("version");
 
-                if (responseObj.getString(AppConstant.KEY_APP_CODE).equalsIgnoreCase("I") && (!version.equalsIgnoreCase("1") )) {
+                if (responseObj.getString(AppConstant.KEY_APP_CODE).equalsIgnoreCase("P") && (!version.equalsIgnoreCase("1") )) {
                     myListener.onAppVersionCallback("Update");
                 } else {
                     myListener.onAppVersionCallback("Don't update");
