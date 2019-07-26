@@ -13,7 +13,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -136,7 +135,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     public void villageFilterSpinner(String filterVillage) {
         Cursor VillageList = null;
-        VillageList = db.rawQuery("SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " where bcode = '" + filterVillage + "'", null);
+        VillageList = db.rawQuery("SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " where dcode = "+prefManager.getDistrictCode()+ " and bcode = '" + filterVillage + "'", null);
 
         Village.clear();
         PMAYSurvey villageListValue = new PMAYSurvey();
@@ -290,7 +289,11 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 if (!homeScreenBinding.name.getText().toString().isEmpty()) {
                     if (!homeScreenBinding.fatherName.getText().toString().isEmpty()) {
                         if (!homeScreenBinding.seccId.getText().toString().isEmpty()) {
-                            takePhoto();
+                            if (Utils.isValidMobile(homeScreenBinding.seccId.getText().toString())) {
+                                takePhoto();
+                            } else {
+                                Utils.showAlert(this, "Seec Id Must be 7 Digit!");
+                            }
                         } else {
                             Utils.showAlert(this, "Enter the  Seec Id!");
                         }

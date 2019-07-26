@@ -585,7 +585,7 @@ public class Utils {
 
     public static boolean isValidMobile(String phone2) {
         boolean check;
-        check = phone2.length() == 10;
+        check = phone2.length() == 7;
         return check;
     }
 

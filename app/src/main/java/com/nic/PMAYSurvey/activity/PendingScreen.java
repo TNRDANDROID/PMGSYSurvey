@@ -125,8 +125,8 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     new fetchPendingtask().execute();
                     pendingAdapter.notifyDataSetChanged();
                 }
-                else if(jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL") && jsonObject.getString("MESSAGE").equalsIgnoreCase("SECC ID ALREADY EXISTS")){
-                    Toasty.error(this, "Your Entered Secc Id is Already Exists!", Toast.LENGTH_LONG, true).show();
+                else if(jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("FAIL")){
+                    Toasty.error(this, jsonObject.getString("MESSAGE"), Toast.LENGTH_LONG, true).show();
                     db.delete(DBHelper.SAVE_PMAY_DETAILS,"id = ?",new String[] {prefManager.getKeyDeleteId()});
                     db.delete(DBHelper.SAVE_PMAY_IMAGES, "pmay_id = ? ", new String[]{prefManager.getKeyDeleteId()});
                     new fetchPendingtask().execute();
