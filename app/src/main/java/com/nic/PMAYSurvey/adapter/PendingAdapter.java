@@ -96,7 +96,7 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
                     uploadPending(position);
                 }
                 else {
-                    Utils.showAlert(context,"Missing End Photo. Please,Capture Again");
+                    Utils.showAlert(context,"There's some photos are missing.Please, delete it and enter details once again");
                 }
 
             }

@@ -22,19 +22,22 @@ import java.util.ArrayList;
 public class TakePhotoScreen extends AppCompatActivity {
     public TakePhotoBinding takePhotoBinding;
     private dbData dbData = new dbData(this);
+    String pmay_id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         takePhotoBinding = DataBindingUtil.setContentView(this, R.layout.take_photo);
         takePhotoBinding.setActivity(this);
+
+        pmay_id = getIntent().getStringExtra("lastInsertedID");
     }
 
     public void viewCamera(int type_of_photo) {
 
         if(type_of_photo == 2){
             dbData.open();
-            ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYImages(getIntent().getStringExtra("lastInsertedID"),"1");
+            ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYImages(pmay_id,"1");
 
             if (!(imageOffline.size() > 0)){
                 Utils.showAlert(this,"Please Capture Start Photo");
@@ -61,13 +64,32 @@ public class TakePhotoScreen extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+        dbData.open();
+        ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYImages(pmay_id,"");
+        if(imageOffline.size() == 2){
+            super.onBackPressed();
+            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+        }
+        else
+        {
+            Utils.showAlert(this,"Missing End Photo. Please,Capture it");
+        }
+
+
     }
 
     public void onBackPress() {
-        super.onBackPressed();
-        setResult(Activity.RESULT_CANCELED);
-        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+        dbData.open();
+        ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYImages(pmay_id,"");
+        if(imageOffline.size() == 2){
+            super.onBackPressed();
+            setResult(Activity.RESULT_CANCELED);
+            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+        }
+        else
+        {
+            Utils.showAlert(this,"Missing End Photo. Please,Capture it");
+        }
+
     }
 }
