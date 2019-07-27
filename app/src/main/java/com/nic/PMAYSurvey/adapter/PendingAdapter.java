@@ -1,7 +1,9 @@
 package com.nic.PMAYSurvey.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
@@ -96,7 +98,16 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
                     uploadPending(position);
                 }
                 else {
-                    Utils.showAlert(context,"There's some photos are missing.Please, delete it and enter details once again");
+                    new AlertDialog.Builder(context)
+                            .setTitle("Alert")
+                            .setMessage("There's some photos are missing.Please, delete it and enter details once again")
+                            .setIcon(R.mipmap.alert)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    dialog.cancel();
+                                }
+                            }).show();
+
                 }
 
             }

@@ -1,10 +1,10 @@
 package com.nic.PMAYSurvey.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,17 +40,38 @@ public class TakePhotoScreen extends AppCompatActivity {
             ArrayList<PMAYSurvey> imageOffline = dbData.getSavedPMAYImages(pmay_id,"1");
 
             if (!(imageOffline.size() > 0)){
-                Utils.showAlert(this,"Please Capture Start Photo");
+                Utils.showAlert(this, "Please Capture Beneficiary Image");
                return;
             }
         }
+        if (type_of_photo == 2) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Alert")
+                    .setMessage("Capture Beneficiary house 10 meter, away from his house")
+                    .setIcon(R.mipmap.alert)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
 
-        Intent intent = new Intent(this, CameraScreen.class);
-        intent.putExtra("lastInsertedID",getIntent().getStringExtra("lastInsertedID"));
-        intent.putExtra(AppConstant.TYPE_OF_PHOTO,String.valueOf( type_of_photo));
+                            openCameraScreen(type_of_photo);
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.cancel();
+                        }
+                    }).show();
+        } else {
+            openCameraScreen(type_of_photo);
+        }
+
+    }
+
+    public void openCameraScreen(int type_of_photo) {
+        Intent intent = new Intent(TakePhotoScreen.this, CameraScreen.class);
+        intent.putExtra("lastInsertedID", getIntent().getStringExtra("lastInsertedID"));
+        intent.putExtra(AppConstant.TYPE_OF_PHOTO, String.valueOf(type_of_photo));
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-
     }
 
     public void homePage() {
@@ -72,7 +93,15 @@ public class TakePhotoScreen extends AppCompatActivity {
         }
         else
         {
-            Utils.showAlert(this,"Missing Photo. Please,Capture it");
+            new AlertDialog.Builder(this)
+                    .setTitle("Alert")
+                    .setMessage("Missing Photo. Please,Capture it")
+                    .setIcon(R.mipmap.alert)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.cancel();
+                        }
+                    }).show();
         }
 
 
@@ -88,7 +117,16 @@ public class TakePhotoScreen extends AppCompatActivity {
         }
         else
         {
-            Utils.showAlert(this,"Missing Photo. Please,Capture it");
+            new AlertDialog.Builder(this)
+                    .setTitle("Alert")
+                    .setMessage("Missing Photo. Please,Capture it")
+                    .setIcon(R.mipmap.alert)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.cancel();
+                        }
+                    }).show();
+
         }
 
     }

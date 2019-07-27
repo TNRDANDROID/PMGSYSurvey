@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/margin"
-            android:text="BeneFiciary Details"
+            android:text="Take Photo"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -54,7 +54,7 @@
         android:layout_marginTop="@dimen/padding"
         android:layout_marginRight="@dimen/margin_left_20dp"
         android:layout_below="@+id/header_layout"
-        android:text="BeneFiciary Details"
+        android:text="Beneficiary Details"
         android:textColor="@android:color/black"
         android:textSize="@dimen/_15sdp"
         android:visibility="visible"
@@ -68,7 +68,7 @@
         android:layout_marginLeft="@dimen/_5sdp"
         android:layout_marginRight="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_17sdp"
-
+        android:visibility="gone"
         android:background="@drawable/rectangle_box">
 
         <LinearLayout
@@ -87,8 +87,7 @@ android:padding="@dimen/_4sdp"
                 <RelativeLayout
                     android:id="@+id/start_layout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{()-> activity.viewCamera(1)}">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/newsTitle"
@@ -176,8 +175,7 @@ android:padding="@dimen/_4sdp"
                 <RelativeLayout
                     android:id="@+id/end_layout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{()-> activity.viewCamera(2)}">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/end"
@@ -214,6 +212,85 @@ android:padding="@dimen/_4sdp"
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/beneficiary_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/take_pic_tv"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rectangle_box"
+        android:onClick="@{()-> activity.viewCamera(1)}"
+        android:tooltipText="Show tooltip"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/lock"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="start"
+
+            android:background="@mipmap/avatar" />
+
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_toRightOf="@+id/lock"
+            android:text="Beneficiary  Image"
+            android:textAlignment="center"
+            android:textColor="#000080"
+            android:textSize="16sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/beneficiary_house_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/beneficiary_layout"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rectangle_box"
+        android:onClick="@{()-> activity.viewCamera(2)}"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/house"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="start"
+
+            android:background="@mipmap/home" />
+
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_toRightOf="@+id/house"
+            android:text="Existing House With Beneficiary"
+
+            android:textAlignment="center"
+            android:textColor="#000080"
+            android:textSize="16sp" />
 
 
     </RelativeLayout>

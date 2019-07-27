@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.nic.PMAYSurvey"
-        minSdkVersion 21
+        minSdkVersion 26
         multiDexEnabled true
 
         targetSdkVersion 29

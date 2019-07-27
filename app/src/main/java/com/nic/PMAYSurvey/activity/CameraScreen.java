@@ -186,7 +186,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
 
             if (id > 0) {
-                Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
+                Toasty.success(this, "Success!", Toast.LENGTH_SHORT, true).show();
                 super.onBackPressed();
                 overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
 
