@@ -33,7 +33,7 @@ public class TakePhotoScreen extends AppCompatActivity {
         pmay_id = getIntent().getStringExtra("lastInsertedID");
     }
 
-    public void viewCamera(int type_of_photo) {
+    public void viewCamera(final int type_of_photo) {
 
         if(type_of_photo == 2){
             dbData.open();
@@ -47,7 +47,7 @@ public class TakePhotoScreen extends AppCompatActivity {
         if (type_of_photo == 2) {
             new AlertDialog.Builder(this)
                     .setTitle("Alert")
-                    .setMessage("Capture Beneficiary house 10 meter, away from his house")
+                    .setMessage("Capture Beneficiary house 10 meter, near from his house")
                     .setIcon(R.mipmap.alert)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {

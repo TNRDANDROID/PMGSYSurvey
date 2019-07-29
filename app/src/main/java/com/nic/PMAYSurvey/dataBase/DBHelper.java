@@ -46,7 +46,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 "habcode  TEXT," +
                 "beneficiary_name  TEXT," +
                 "secc_id  TEXT," +
-                "habitation_name TEXT)");
+                "habitation_name TEXT," +
+                "pvname TEXT)");
 
         db.execSQL("CREATE TABLE " + SAVE_PMAY_DETAILS + " ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"+

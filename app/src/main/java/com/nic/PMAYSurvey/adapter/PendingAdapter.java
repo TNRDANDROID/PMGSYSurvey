@@ -82,7 +82,7 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
         holder.pendingAdapterBinding.name.setText(pendingListValues.get(position).getBeneficiaryName());
 
         String pmay_id = pendingListValues.get(position).getPmayId();
-        Cursor image = db.rawQuery("Select * from " + DBHelper.SAVE_PMAY_IMAGES + " where pmay_id =" + pmay_id, null);
+       final Cursor image = db.rawQuery("Select * from " + DBHelper.SAVE_PMAY_IMAGES + " where pmay_id =" + pmay_id, null);
 
         if(image.getCount() > 0) {
             holder.pendingAdapterBinding.viewOfflineImages.setVisibility(View.VISIBLE);
@@ -113,13 +113,23 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
             }
         });
 
-        holder.pendingAdapterBinding.delete.setOnClickListener(view ->
+        holder.pendingAdapterBinding.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletePending(position);
+            }
+        });
 
-                deletePending(position));
 
-        holder.pendingAdapterBinding.viewOfflineImages.setOnClickListener(view ->
 
-                viewImages(position));
+        holder.pendingAdapterBinding.viewOfflineImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewImages(position);
+            }
+        });
+
+
     }
 
 
@@ -158,7 +168,7 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
         prefManager.setKeyDeleteId(pmay_id);
 
         try {
-            dataset.put(AppConstant.KEY_SERVICE_ID,"pmay_source_save");
+            dataset.put(AppConstant.KEY_SERVICE_ID,AppConstant.PMAY_SOURCE_SAVE);
             dataset.put(AppConstant.PV_CODE, pvcode);
             dataset.put(AppConstant.HAB_CODE, habcode);
             dataset.put(AppConstant.BENEFICIARY_NAME, beneficiary_name);

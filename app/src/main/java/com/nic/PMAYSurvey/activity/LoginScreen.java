@@ -248,13 +248,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
 
 
-    public void getPMAYList() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("PMAYList", Api.Method.POST, UrlGenerator.getPMAYListUrl(), pmayListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     public JSONObject villageListJsonParams() throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.villageListDistrictBlockWiseJsonParams(this).toString());
@@ -264,14 +258,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         Log.d("villageListDistrictWise", "" + authKey);
         return dataSet;
     }
-    public JSONObject pmayListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.pmayListJsonParams().toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("PMAYList", "" + authKey);
-        return dataSet;
-    }
+
 
     public JSONObject habitationListJsonParams() throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.HabitationListDistrictBlockVillageWiseJsonParams(this).toString());
@@ -311,7 +298,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName() + prefManager.getName());
                         prefManager.setUserPassKey(decryptedKey);
                         getVillageList();
-                        getPMAYList();
                         getHabList();
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -336,15 +322,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     new InsertVillageTask().execute(jsonObject);
                 }
                 Log.d("VillageList", "" + responseDecryptedBlockKey);
-            }
-            if ("PMAYList".equals(urlType) && loginResponse != null) {
-                String key = loginResponse.getString(AppConstant.ENCODE_DATA);
-                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    new InsertPMAYTask().execute(jsonObject);
-                }
-                Log.d("PMAYList", "" + responseDecryptedBlockKey);
             }
             if ("HabitationList".equals(urlType) && loginResponse != null) {
                 String key = loginResponse.getString(AppConstant.ENCODE_DATA);
@@ -436,42 +413,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    public class InsertPMAYTask extends AsyncTask<JSONObject, Void, Void> {
 
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            dbData.open();
-            ArrayList<PMAYSurvey> all_pmayListCount = dbData.getAll_PMAYList("");
-            if (all_pmayListCount.size() <= 0) {
-                if (params.length > 0) {
-                    JSONArray jsonArray = new JSONArray();
-                    try {
-                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        PMAYSurvey pmaySurvey = new PMAYSurvey();
-                        try {
-                            pmaySurvey.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
-                            pmaySurvey.setHabCode(jsonArray.getJSONObject(i).getString(AppConstant.HAB_CODE));
-                            pmaySurvey.setBeneficiaryName(jsonArray.getJSONObject(i).getString(AppConstant.BENEFICIARY_NAME));
-                            pmaySurvey.setSeccId(jsonArray.getJSONObject(i).getString(AppConstant.SECC_ID));
-                            pmaySurvey.setHabitationName(jsonArray.getJSONObject(i).getString(AppConstant.HABITATION_NAME));
-
-                            dbData.insertPMAY(pmaySurvey);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-
-            }
-            return null;
-        }
-
-    }
 
 
     @Override

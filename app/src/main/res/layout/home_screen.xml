@@ -8,13 +8,16 @@
             type="com.nic.PMAYSurvey.activity.HomePage" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:orientation="vertical">
-
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background">
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -33,7 +36,6 @@
                         style="@style/font_circular_bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/_12sdp"
                         android:layout_centerInParent="true"
                         android:text="Home Page"
                         android:textColor="@android:color/white"
@@ -58,7 +60,7 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-
+        </com.google.android.material.appbar.AppBarLayout>
 
 
         <androidx.core.widget.NestedScrollView
@@ -239,7 +241,7 @@
                         android:layout_marginLeft="@dimen/margin_left_20dp"
                         android:layout_marginTop="@dimen/padding"
                         android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:text="Enter Father/Spouse Name"
+                        android:text="Enter Father/Husband Name"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp"
                         android:visibility="visible"
@@ -263,7 +265,7 @@
                             android:layout_centerInParent="true"
                             android:layout_marginLeft="15dp"
                             android:background="@android:color/transparent"
-                            android:hint="Enter Father/Spouse Name"
+                            android:hint="Enter Father/Husband Name"
                             android:inputType="textPersonName"
                             android:singleLine="true"
                             android:textColor="@android:color/black"
@@ -350,21 +352,6 @@
 
                 </LinearLayout>
 
-
-
-
-                <TextView
-                    android:id="@+id/view_pic_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="View Images"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sdp"
-                    android:visibility="gone"
-                    style="@string/font_circular_medium" />
                 <LinearLayout
                     android:id="@+id/take_pic_layout"
                     android:layout_width="wrap_content"
@@ -372,7 +359,7 @@
                     android:layout_below="@+id/seec_id_layout"
                     android:layout_alignParentRight="true"
                     android:onClick="@{()-> activity.validateFields()}"
-                    android:layout_marginTop="@dimen/_25sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
                     android:background="@drawable/white_background_left_two_corners"
                     android:orientation="horizontal"
                     android:padding="@dimen/_8sdp">
@@ -395,7 +382,7 @@
                 <RelativeLayout
                     android:id="@+id/syn_data"
                     android:onClick="@{()-> activity.openPendingScreen()}"
-                    android:layout_width="130dp"
+                    android:layout_width="190dp"
                     android:layout_height="45dp"
                     android:layout_below="@+id/take_pic_layout"
                     android:layout_centerHorizontal="true"
@@ -413,7 +400,7 @@
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="Syn Data"
+                        android:text="View Captured Images"
                         android:textStyle="bold"
                         android:textAllCaps="false"
                         android:textColor="@android:color/black"
@@ -422,12 +409,39 @@
 
                 </RelativeLayout>
 
+                <LinearLayout
+                    android:id="@+id/view_server_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/syn_data"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/white_background_right_two_corners"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_10sdp"
+                    android:visibility="gone">
+
+
+                    <TextView
+                        style="@string/font_normal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="View Data From Server"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:textStyle="normal" />
+
+
+                </LinearLayout>
+
+
                 <TextView
                     android:id="@+id/empty"
                     style="@string/font_circular_medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/syn_data"
+                    android:layout_below="@+id/view_server_data"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:padding="8dp"
@@ -450,11 +464,10 @@
                     android:background="@drawable/background"
                     style="@string/font_circular_medium" />
 
-
             </RelativeLayout>
 
         </androidx.core.widget.NestedScrollView>
 
 
-    </RelativeLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

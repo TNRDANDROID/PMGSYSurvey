@@ -5,7 +5,7 @@
 
         <variable
             name="activity"
-            type="com.nic.PMAYSurvey.activity.PendingScreen" />
+            type="com.nic.PMAYSurvey.activity.ViewServerDataScreen" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -38,9 +38,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:layout_marginRight="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/margin"
-                        android:text="Upload Data"
+                        android:layout_marginLeft="@dimen/_8sdp"
+                        android:text="View Server Data"
                         android:textColor="@android:color/white"
                         android:textSize="18sp" />
 
@@ -60,8 +60,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:layout_marginRight="@dimen/_12sdp"
-                        android:onClick="@{()-> activity.homePage()}"
-                        android:src="@mipmap/home_img" />
+                        android:src="@mipmap/home_img"
+                        android:visibility="gone"/>
 
 
                 </RelativeLayout>
@@ -84,15 +84,17 @@
                 android:orientation="vertical">
 
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/pending_list"
+                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    android:id="@+id/server_data_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:shimmer_demo_layout="@layout/demo_server_data_adapter"
+                    app:shimmer_demo_shimmer_color="#8FFFFFFF"
                     android:layout_margin="5dp"
                     android:fadeScrollbars="false"
                     android:scrollbarSize="4dp"
                     android:scrollbars="vertical"
-                    android:visibility="gone"/>
+                    app:shimmer_demo_angle="15"/>
 
                 <TextView
                     android:id="@+id/not_found_tv"

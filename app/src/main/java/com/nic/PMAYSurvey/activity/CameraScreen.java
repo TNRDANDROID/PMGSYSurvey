@@ -22,7 +22,6 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -159,16 +158,16 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                         float[] results = new float[1];
                         Location.distanceBetween(latitude, longitude, offlatTextValue, offlongTextValue, results);
                         float distanceInMeters = results[0];
-                        boolean isWithin10m = distanceInMeters < 0.01;
+                        boolean isWithin10m = distanceInMeters < 0.005;
                         Log.d("isWithin10m", String.valueOf(isWithin10m));
 
-                        if(isWithin10m){
-                            continue;
-                        }
-                        else {
-                            Utils.showAlert(this,"Capturing must be within 10 metres");
-                            return;
-                        }
+//                        if (distance(latitude, longitude, offlatTextValue, offlongTextValue,"K") < 15) {
+//                            continue;
+//                        }
+//                        else {
+//                            Utils.showAlert(this, "Capturing must be within 15 metres");
+//                            return;
+//                        }
                     }
                 }
             }
@@ -201,6 +200,70 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
             //e.printStackTrace();
         }
+    }
+
+    public static float distFrom(Double lat1, Double lng1, Double lat2, Double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        float dist = (float) (earthRadius * c);
+        Log.d("DistMeter", "" + dist);
+        return dist;
+    }
+
+    public static double measure(Double lat1, Double lon1, Double lat2, Double lon2) {  // generally used geo measurement function
+        double R = 6378.137; // Radius of earth in KM
+        double dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+        double dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double d = R * c;
+        Log.d("DistMeter", "" + d * 1000);
+        return d * 1000; // meters
+    }
+
+    private double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+        if ((lat1 == lat2) && (lon1 == lon2)) {
+            return 0;
+        }
+        else {
+            double theta = lon1 - lon2;
+
+            double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+            dist = Math.acos(dist);
+
+            dist = rad2deg(dist);
+
+            dist = dist * 60 * 1.1515;
+
+            if (unit.equalsIgnoreCase("K")) {
+
+                dist = dist * 1.609344;
+
+            }
+            double meter = dist * 1000;
+            Log.d("meter", "" + meter);
+            return (meter);
+        }
+    }
+
+    private double deg2rad(double deg) {
+
+        return (deg * Math.PI / 180.0);
+
+    }
+
+    private double rad2deg(double rad) {
+
+        return (rad * 180.0 / Math.PI);
+
     }
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

@@ -145,6 +145,7 @@ public class dbData {
         values.put(AppConstant.BENEFICIARY_NAME, pmgsySurvey.getBeneficiaryName());
         values.put(AppConstant.SECC_ID, pmgsySurvey.getSeccId());
         values.put(AppConstant.HABITATION_NAME, pmgsySurvey.getHabitationName());
+        values.put(AppConstant.PV_NAME, pmgsySurvey.getPvName());
 
         long id = db.insert(DBHelper.PMAY_LIST_TABLE_NAME,null,values);
         Log.d("Inserted_id_PMAY_LIST", String.valueOf(id));
@@ -182,6 +183,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.SECC_ID)));
                     card.setHabitationName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.HABITATION_NAME)));
+                    card.setPvName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_NAME)));
 
                     cards.add(card);
                 }
@@ -313,6 +316,10 @@ public class dbData {
         db.execSQL("delete from " + DBHelper.PMAY_LIST_TABLE_NAME);
     }
 
+    public void deletePMAYDetails() { db.execSQL("delete from " + DBHelper.SAVE_PMAY_DETAILS); }
+
+    public void deletePMAYImages() { db.execSQL("delete from " + DBHelper.SAVE_PMAY_IMAGES);}
+
 
 
 
@@ -320,6 +327,8 @@ public class dbData {
 
         deleteVillageTable();
         deletePMAYTable();
+        deletePMAYDetails();
+        deletePMAYImages();
     }
 
 

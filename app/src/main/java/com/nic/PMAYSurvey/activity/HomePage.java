@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.adapter.CommonAdapter;
 import com.nic.PMAYSurvey.api.Api;
+import com.nic.PMAYSurvey.api.ApiService;
 import com.nic.PMAYSurvey.api.ServerResponse;
 import com.nic.PMAYSurvey.constant.AppConstant;
 import com.nic.PMAYSurvey.dataBase.DBHelper;
@@ -30,8 +32,10 @@ import com.nic.PMAYSurvey.databinding.HomeScreenBinding;
 import com.nic.PMAYSurvey.dialog.MyDialog;
 import com.nic.PMAYSurvey.model.PMAYSurvey;
 import com.nic.PMAYSurvey.session.PrefManager;
+import com.nic.PMAYSurvey.utils.UrlGenerator;
 import com.nic.PMAYSurvey.utils.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -114,9 +118,19 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             }
         };
         myHandler.postDelayed(pmgsy, 1500);
+        homeScreenBinding.viewServerData.setAlpha(0);
+        final Runnable block = new Runnable() {
+            @Override
+            public void run() {
+                homeScreenBinding.viewServerData.setAlpha(1);
+                homeScreenBinding.viewServerData.startAnimation(AnimationUtils.loadAnimation(HomePage.this, R.anim.text_view_move));
 
+            }
+        };
+        myHandler.postDelayed(block, 2000);
 
         syncButtonVisibility();
+        viewServerData();
 
     }
 
@@ -224,6 +238,37 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     }
 
 
+    public void viewServerData() {
+        homeScreenBinding.viewServerData.setVisibility(View.VISIBLE);
+        homeScreenBinding.viewServerData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Utils.isOnline()) {
+                    getPMAYList();
+                } else {
+                    Utils.showAlert(HomePage.this, "Your Internet seems to be Offline.Data can be viewed only in Online mode.");
+                }
+            }
+        });
+    }
+
+    public void getPMAYList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("PMAYList", Api.Method.POST, UrlGenerator.getPMAYListUrl(), pmayListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject pmayListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.pmayListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("PMAYList", "" + authKey);
+        return dataSet;
+    }
+
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
 
@@ -231,19 +276,28 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
 
-            if ("HabitationList".equals(urlType) && responseObj != null) {
+            if ("PMAYList".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertPMAYTask().execute(jsonObject);
+                    dataFromServer();
+                }else if(jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")){
+                    Utils.showAlert(this,"No Record Found!");
+                }
 
-                Log.d("HabitationList", "" + responseDecryptedBlockKey);
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+    private void dataFromServer() {
+        Intent intent = new Intent(this, ViewServerDataScreen.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
 
     @Override
     public void OnError(VolleyError volleyError) {
@@ -370,6 +424,43 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     }
 
 
+    public class InsertPMAYTask extends AsyncTask<JSONObject, Void, Void> {
 
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.deletePMAYTable();
+            dbData.open();
+            ArrayList<PMAYSurvey> all_pmayListCount = dbData.getAll_PMAYList("");
+            if (all_pmayListCount.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        PMAYSurvey pmaySurvey = new PMAYSurvey();
+                        try {
+                            pmaySurvey.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
+                            pmaySurvey.setHabCode(jsonArray.getJSONObject(i).getString(AppConstant.HAB_CODE));
+                            pmaySurvey.setBeneficiaryName(jsonArray.getJSONObject(i).getString(AppConstant.BENEFICIARY_NAME));
+                            pmaySurvey.setSeccId(jsonArray.getJSONObject(i).getString(AppConstant.SECC_ID));
+                            pmaySurvey.setHabitationName(jsonArray.getJSONObject(i).getString(AppConstant.HABITATION_NAME));
+                            pmaySurvey.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
+
+                            dbData.insertPMAY(pmaySurvey);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            }
+            return null;
+        }
+
+    }
 
 }

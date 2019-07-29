@@ -23,12 +23,14 @@ import com.nic.PMAYSurvey.Fragment.SlideshowDialogFragment;
 import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.adapter.FullImageAdapter;
 import com.nic.PMAYSurvey.api.Api;
+import com.nic.PMAYSurvey.api.ApiService;
 import com.nic.PMAYSurvey.api.ServerResponse;
 import com.nic.PMAYSurvey.constant.AppConstant;
 import com.nic.PMAYSurvey.dataBase.dbData;
 import com.nic.PMAYSurvey.databinding.FullImageRecyclerBinding;
 import com.nic.PMAYSurvey.model.PMAYSurvey;
 import com.nic.PMAYSurvey.session.PrefManager;
+import com.nic.PMAYSurvey.utils.UrlGenerator;
 import com.nic.PMAYSurvey.utils.Utils;
 
 import org.json.JSONArray;
@@ -49,7 +51,7 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         fullImageRecyclerBinding = DataBindingUtil.setContentView(this, R.layout.full_image_recycler);
         fullImageRecyclerBinding.setActivity(this);
         prefManager = new PrefManager(this);
-//        work_id = getIntent().getStringExtra(AppConstant.WORK_ID);
+//        work_id = ;
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
         fullImageRecyclerBinding.imagePreviewRecyclerview.setLayoutManager(mLayoutManager);
@@ -59,6 +61,9 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
         fullImageRecyclerBinding.imagePreviewRecyclerview.setFocusable(false);
         fullImageRecyclerBinding.imagePreviewRecyclerview.setAdapter(fullImageAdapter);
         new fetchImagetask().execute();
+        if(Utils.isOnline()){
+            getOnlineImage();
+        }
 
 
     }
@@ -110,29 +115,34 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-//    public void getOnlineImage() {
-//        try {
-//            new ApiService(this).makeJSONObjectRequest("OnlineImage", Api.Method.POST, UrlGenerator.getServicesListUrl(), ImagesJsonParams(), "not cache", this);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public JSONObject ImagesJsonParams() throws JSONException {
-//        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), ImagesListJsonParams().toString());
-//        JSONObject dataSet = new JSONObject();
-//        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-//        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-//        Log.d("utils_ImageEncrydataSet", "" + authKey);
-//        return dataSet;
-//    }
-//
-//    public JSONObject ImagesListJsonParams() throws JSONException {
-//        JSONObject dataSet = new JSONObject();
-//        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ACTIVITY_IMAGE_VIEW);
-//        Log.d("utils_imageDataset", "" + dataSet);
-//        return dataSet;
-//    }
+    public void getOnlineImage() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("OnlineImage", Api.Method.POST, UrlGenerator.getPMAYListUrl(), ImagesJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject ImagesJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), ImagesListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("utils_ImageEncrydataSet", "" + authKey);
+        return dataSet;
+    }
+
+    public JSONObject ImagesListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_PMAY_SOURCE_DATA_PHOTO);
+        dataSet.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
+        dataSet.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());
+        dataSet.put(AppConstant.PV_CODE, getIntent().getStringExtra(AppConstant.PV_CODE));
+        dataSet.put(AppConstant.HAB_CODE, getIntent().getStringExtra(AppConstant.HAB_CODE));
+        dataSet.put(AppConstant.SECC_ID, getIntent().getStringExtra(AppConstant.SECC_ID));
+        Log.d("utils_imageDataset", "" + dataSet);
+        return dataSet;
+    }
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {

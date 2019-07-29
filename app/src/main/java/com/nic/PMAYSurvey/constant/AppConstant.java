@@ -53,6 +53,7 @@ public class AppConstant {
     public static String PMAY_SOURCE_SAVE = "pmay_source_save";
     public static String KEY_TRACK_DATA = "track_data";
     public static String PMAY_ID = "pmay_id";
+    public static String KEY_PMAY_SOURCE_DATA_PHOTO = "pmay_source_data_photo";
 
 
 

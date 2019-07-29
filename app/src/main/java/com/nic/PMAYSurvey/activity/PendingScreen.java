@@ -1,6 +1,7 @@
 package com.nic.PMAYSurvey.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -47,11 +48,13 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     public dbData dbData = new dbData(this);
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
+    private Activity context;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pendingScreenBinding = DataBindingUtil.setContentView(this, R.layout.pending_screen);
         pendingScreenBinding.setActivity(this);
+        context = this;
         prefManager = new PrefManager(this);
         try {
             dbHelper = new DBHelper(this);
