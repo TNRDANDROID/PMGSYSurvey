@@ -430,7 +430,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         protected Void doInBackground(JSONObject... params) {
             dbData.deletePMAYTable();
             dbData.open();
-            ArrayList<PMAYSurvey> all_pmayListCount = dbData.getAll_PMAYList("");
+            ArrayList<PMAYSurvey> all_pmayListCount = dbData.getAll_PMAYList("","");
             if (all_pmayListCount.size() <= 0) {
                 if (params.length > 0) {
                     JSONArray jsonArray = new JSONArray();

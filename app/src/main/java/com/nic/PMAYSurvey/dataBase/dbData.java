@@ -153,15 +153,15 @@ public class dbData {
         return pmgsySurvey;
     }
 
-    public ArrayList<PMAYSurvey > getAll_PMAYList(String pvcode) {
+    public ArrayList<PMAYSurvey > getAll_PMAYList(String pvcode,String habcode) {
 
         ArrayList<PMAYSurvey > cards = new ArrayList<>();
         Cursor cursor = null;
 
         String condition = "";
 
-        if (pvcode != "") {
-            condition = " where pvcode = '" + pvcode+"'";
+        if (habcode != "") {
+            condition = " where pvcode = '" + pvcode+"' and habcode = '" + habcode+"'" ;
         }else {
             condition = "";
         }

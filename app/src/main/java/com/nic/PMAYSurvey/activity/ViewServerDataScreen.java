@@ -3,11 +3,14 @@ package com.nic.PMAYSurvey.activity;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
@@ -19,15 +22,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.android.volley.VolleyError;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.nic.PMAYSurvey.R;
+import com.nic.PMAYSurvey.adapter.CommonAdapter;
 import com.nic.PMAYSurvey.adapter.ViewServerDataListAdapter;
 import com.nic.PMAYSurvey.api.Api;
 import com.nic.PMAYSurvey.api.ServerResponse;
+import com.nic.PMAYSurvey.constant.AppConstant;
+import com.nic.PMAYSurvey.dataBase.DBHelper;
 import com.nic.PMAYSurvey.dataBase.dbData;
 import com.nic.PMAYSurvey.databinding.ViewServerDataScreenBinding;
 import com.nic.PMAYSurvey.model.PMAYSurvey;
 import com.nic.PMAYSurvey.session.PrefManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ViewServerDataScreen extends AppCompatActivity implements Api.ServerResponseListener {
     public ViewServerDataScreenBinding viewServerDataScreenBinding;
@@ -36,6 +43,11 @@ public class ViewServerDataScreen extends AppCompatActivity implements Api.Serve
     public dbData dbData = new dbData(this);
     private SearchView searchView;
     private PrefManager prefManager;
+    String pref_Village;
+    private List<PMAYSurvey> Village = new ArrayList<>();
+    private List<PMAYSurvey> Habitation = new ArrayList<>();
+    public static SQLiteDatabase db;
+    public static DBHelper dbHelper;
 
 
     @Override
@@ -43,9 +55,116 @@ public class ViewServerDataScreen extends AppCompatActivity implements Api.Serve
         super.onCreate(savedInstanceState);
         viewServerDataScreenBinding = DataBindingUtil.setContentView(this,R.layout.view_server_data_screen);
         viewServerDataScreenBinding.setActivity(this);
+        try {
+            dbHelper = new DBHelper(this);
+            db = dbHelper.getWritableDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        prefManager = new PrefManager(this);
 
         setSupportActionBar(viewServerDataScreenBinding.toolbar);
         initRecyclerView();
+
+        villageFilterSpinner(prefManager.getBlockCode());
+        viewServerDataScreenBinding.villageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+
+                    pref_Village = Village.get(position).getPvName();
+                    prefManager.setVillageListPvName(pref_Village);
+                    prefManager.setPvCode(Village.get(position).getPvCode());
+                    habitationFilterSpinner(prefManager.getDistrictCode(), prefManager.getBlockCode(), prefManager.getPvCode());
+                    viewServerDataScreenBinding.serverDataList.setVisibility(View.GONE);
+                    viewServerDataScreenBinding.notFoundTv.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        viewServerDataScreenBinding.habitationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+
+                    pref_Village = Village.get(position).getHabitationName();
+                    prefManager.setHabCode(Habitation.get(position).getHabCode());
+                    new fetchScheduletask().execute();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    public void villageFilterSpinner(String filterVillage) {
+        Cursor VillageList = null;
+        VillageList = db.rawQuery("SELECT * FROM " + DBHelper.VILLAGE_TABLE_NAME + " where dcode = " + prefManager.getDistrictCode() + " and bcode = '" + filterVillage + "'", null);
+
+        Village.clear();
+        PMAYSurvey villageListValue = new PMAYSurvey();
+        villageListValue.setPvName("Select Village");
+        Village.add(villageListValue);
+        if (VillageList.getCount() > 0) {
+            if (VillageList.moveToFirst()) {
+                do {
+                    PMAYSurvey villageList = new PMAYSurvey();
+                    String districtCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
+                    String blockCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
+                    String pvCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_CODE));
+                    String pvname = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_NAME));
+
+                    villageList.setDistictCode(districtCode);
+                    villageList.setBlockCode(blockCode);
+                    villageList.setPvCode(pvCode);
+                    villageList.setPvName(pvname);
+
+                    Village.add(villageList);
+                    Log.d("spinnersize", "" + Village.size());
+                } while (VillageList.moveToNext());
+            }
+        }
+        viewServerDataScreenBinding.villageSpinner.setAdapter(new CommonAdapter(this, Village, "VillageList"));
+    }
+
+    public void habitationFilterSpinner(String dcode, String bcode, String pvcode) {
+        Cursor HABList = null;
+        HABList = db.rawQuery("SELECT * FROM " + DBHelper.HABITATION_TABLE_NAME + " where dcode = '" + dcode + "'and bcode = '" + bcode + "' and pvcode = '" + pvcode + "' order by habitation_name asc", null);
+
+        Habitation.clear();
+        PMAYSurvey habitationListValue = new PMAYSurvey();
+        habitationListValue.setHabitationName("Select Habitation");
+        Habitation.add(habitationListValue);
+        if (HABList.getCount() > 0) {
+            if (HABList.moveToFirst()) {
+                do {
+                    PMAYSurvey habList = new PMAYSurvey();
+                    String districtCode = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
+                    String blockCode = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
+                    String pvCode = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.PV_CODE));
+                    String habCode = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.HABB_CODE));
+                    String habName = HABList.getString(HABList.getColumnIndexOrThrow(AppConstant.HABITATION_NAME));
+
+                    habList.setDistictCode(districtCode);
+                    habList.setBlockCode(blockCode);
+                    habList.setPvCode(pvCode);
+                    habList.setHabCode(habCode);
+                    habList.setHabitationName(habName);
+
+                    Habitation.add(habList);
+                    Log.d("spinnersize", "" + Habitation.size());
+                } while (HABList.moveToNext());
+            }
+        }
+        viewServerDataScreenBinding.habitationSpinner.setAdapter(new CommonAdapter(this, Habitation, "HabitationList"));
     }
     private void initRecyclerView() {
         recyclerView = viewServerDataScreenBinding.serverDataList;
@@ -53,13 +172,6 @@ public class ViewServerDataScreen extends AppCompatActivity implements Api.Serve
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                new fetchScheduletask().execute();
-            }
-        },2000);
     }
 
     public class fetchScheduletask extends AsyncTask<Void, Void,
@@ -68,7 +180,7 @@ public class ViewServerDataScreen extends AppCompatActivity implements Api.Serve
         protected ArrayList<PMAYSurvey> doInBackground(Void... params) {
             dbData.open();
             ArrayList<PMAYSurvey> savedList = new ArrayList<>();
-            savedList = dbData.getAll_PMAYList("");
+            savedList = dbData.getAll_PMAYList(prefManager.getPvCode(), prefManager.getHabCode());
             Log.d("savedList_COUNT", String.valueOf(savedList.size()));
             return savedList;
         }
@@ -76,16 +188,26 @@ public class ViewServerDataScreen extends AppCompatActivity implements Api.Serve
         @Override
         protected void onPostExecute(ArrayList<PMAYSurvey> savedList) {
             super.onPostExecute(savedList);
+
             viewServerDataListAdapter = new ViewServerDataListAdapter(ViewServerDataScreen.this, savedList);
-            recyclerView.setAdapter(viewServerDataListAdapter);
-            recyclerView.showShimmerAdapter();
-            recyclerView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    loadCards();
-                }
-            }, 1000);
+            if (savedList.size() > 0) {
+                recyclerView.setVisibility(View.VISIBLE);
+                viewServerDataScreenBinding.notFoundTv.setVisibility(View.GONE);
+                recyclerView.setAdapter(viewServerDataListAdapter);
+                recyclerView.showShimmerAdapter();
+                recyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadCards();
+                    }
+                }, 1000);
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                viewServerDataScreenBinding.notFoundTv.setVisibility(View.VISIBLE);
+            }
         }
+
+
     }
 
     private void loadCards() {
