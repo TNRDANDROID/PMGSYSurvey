@@ -439,7 +439,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         String userName = prefManager.getUserName();
         String password = prefManager.getUserPassword();
         if (name.equals(userName) && pass.equals(password)) {
-//            showHomeScreen();
+            showHomeScreen();
         } else {
             Utils.showAlert(this, "No data available for offline. Please Turn On Your Network");
         }
