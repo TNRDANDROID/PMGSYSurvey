@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +55,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private List<PMAYSurvey> Village = new ArrayList<>();
     private List<PMAYSurvey> Habitation = new ArrayList<>();
     String lastInsertedID;
+    String isAlive = "", isLegal = "", isMigrated = "";
 
 
     String pref_Village;
@@ -98,10 +100,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-
-                    pref_Village = Village.get(position).getHabitationName();
-                    prefManager.setHabCode(Village.get(position).getHabCode());
-
+                    prefManager.setHabCode(Habitation.get(position).getHabCode());
                 }
             }
 
@@ -119,6 +118,95 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
             }
         };
+
+        homeScreenBinding.aliveYes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isAlive = "Y";
+                    homeScreenBinding.aliveNo.setChecked(false);
+                    homeScreenBinding.legalHeirTv.setVisibility(View.GONE);
+                    homeScreenBinding.legalLayout.setVisibility(View.GONE);
+                    homeScreenBinding.benfMigTv.setVisibility(View.VISIBLE);
+                    homeScreenBinding.beneficiaryMigratedLayout.setVisibility(View.VISIBLE);
+                    homeScreenBinding.migYes.setChecked(false);
+                    homeScreenBinding.migNo.setChecked(false);
+                    validateYesNo();
+                }
+
+            }
+        });
+
+
+        homeScreenBinding.aliveNo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isAlive = "N";
+                    homeScreenBinding.aliveYes.setChecked(false);
+                    homeScreenBinding.legalYes.setChecked(false);
+                    homeScreenBinding.legalNo.setChecked(false);
+                    homeScreenBinding.legalHeirTv.setVisibility(View.VISIBLE);
+                    homeScreenBinding.legalLayout.setVisibility(View.VISIBLE);
+                    homeScreenBinding.migYes.setChecked(false);
+                    homeScreenBinding.migNo.setChecked(false);
+                    validateYesNo();
+                } else {
+                    homeScreenBinding.legalHeirTv.setVisibility(View.GONE);
+                    homeScreenBinding.legalLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        homeScreenBinding.legalYes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isLegal = "Y";
+                    homeScreenBinding.legalNo.setChecked(false);
+                    homeScreenBinding.migYes.setChecked(false);
+                    homeScreenBinding.migNo.setChecked(false);
+                    homeScreenBinding.benfMigTv.setVisibility(View.VISIBLE);
+                    homeScreenBinding.beneficiaryMigratedLayout.setVisibility(View.VISIBLE);
+                    validateYesNo();
+                }
+            }
+        });
+        homeScreenBinding.legalNo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isLegal = "N";
+                    homeScreenBinding.legalYes.setChecked(false);
+                    homeScreenBinding.benfMigTv.setVisibility(View.GONE);
+                    homeScreenBinding.beneficiaryMigratedLayout.setVisibility(View.GONE);
+                    validateYesNo();
+                }
+            }
+        });
+
+        homeScreenBinding.migYes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isMigrated = "Y";
+                    homeScreenBinding.migNo.setChecked(false);
+                    validateYesNo();
+                }
+            }
+        });
+
+        homeScreenBinding.migNo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isMigrated = "N";
+                    homeScreenBinding.migYes.setChecked(false);
+                    validateYesNo();
+                }
+            }
+        });
+
         myHandler.postDelayed(pmgsy, 1500);
         homeScreenBinding.viewServerData.setAlpha(0);
         final Runnable block = new Runnable() {
@@ -137,8 +225,33 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     }
 
 
+    public void validateYesNo() {
+        if (isAlive.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("Y")) {
+            homeScreenBinding.takePhotoTv.setText("Save details");
+        } else if (isAlive.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("N")) {
+            homeScreenBinding.takePhotoTv.setText("Take Photo");
+        } else if (isAlive.equalsIgnoreCase("N") && isLegal.equalsIgnoreCase("N")) {
+            homeScreenBinding.takePhotoTv.setText("Save details");
+        } else if (isAlive.equalsIgnoreCase("N") && isLegal.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("Y")) {
+            homeScreenBinding.takePhotoTv.setText("Save details");
+        } else if (isAlive.equalsIgnoreCase("N") && isLegal.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("N")) {
+            homeScreenBinding.takePhotoTv.setText("Take Photo");
+        }
+    }
 
-
+//    public boolean validateCheck() {
+//        if (isAlive.equalsIgnoreCase("") || isMigrated.equalsIgnoreCase("Y")) {
+//            homeScreenBinding.takePhotoTv.setText("Save details");
+//        } else if (isAlive.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("N")) {
+//            homeScreenBinding.takePhotoTv.setText("Take Photo");
+//        } else if (isAlive.equalsIgnoreCase("N") && isLegal.equalsIgnoreCase("N")) {
+//            homeScreenBinding.takePhotoTv.setText("Save details");
+//        } else if (isAlive.equalsIgnoreCase("N") && isLegal.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("Y")) {
+//            homeScreenBinding.takePhotoTv.setText("Save details");
+//        } else if (isAlive.equalsIgnoreCase("N") && isLegal.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("N")) {
+//            homeScreenBinding.takePhotoTv.setText("Take Photo");
+//        }
+//    }
 
     @Override
     public void onBackPressed() {
@@ -346,7 +459,20 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                     if (!homeScreenBinding.fatherName.getText().toString().isEmpty()) {
                         if (!homeScreenBinding.seccId.getText().toString().isEmpty()) {
                             if (Utils.isValidMobile(homeScreenBinding.seccId.getText().toString())) {
-                                takePhoto();
+                                if ((homeScreenBinding.aliveYes.isChecked()) || homeScreenBinding.aliveNo.isChecked()) {
+                                    if (isAlive.equalsIgnoreCase("N")) {
+                                        if ((homeScreenBinding.legalYes.isChecked()) || homeScreenBinding.legalNo.isChecked()) {
+                                            checkLegalYesNo();
+                                        } else {
+                                            Utils.showAlert(this, "Check the beneficiary legal heir is available or not!");
+                                        }
+                                    } else {
+                                        checkLegalYesNo();
+                                    }
+                                } else {
+                                    Utils.showAlert(this, "Check the beneficiary is alive or not!");
+                                }
+
                             } else {
                                 Utils.showAlert(this, "Seec Id Must be 7 Digit!");
                             }
@@ -354,10 +480,10 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                             Utils.showAlert(this, "Enter the  Seec Id!");
                         }
                     } else {
-                        Utils.showAlert(this, "Enter the Father Name!");
+                        Utils.showAlert(this, "Enter the Father/Husband Name!");
                     }
                 } else {
-                    Utils.showAlert(this, "Enter the Name!");
+                    Utils.showAlert(this, "Enter the Beneficiary Name!");
                 }
             } else {
                 Utils.showAlert(this, "Select Habitation!");
@@ -368,7 +494,16 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
     }
 
-    public void takePhoto() {
+    public void checkLegalYesNo() {
+        if ((homeScreenBinding.migYes.isChecked()) || homeScreenBinding.migNo.isChecked()) {
+            takePhoto(homeScreenBinding.takePhotoTv.getText().toString());
+        } else {
+            Utils.showAlert(this, "Check the beneficiary is Migrated or not!");
+        }
+    }
+
+    public void takePhoto(String Txt) {
+        Log.d("ButtonType",""+Txt);
         String pvcode = Village.get(homeScreenBinding.villageSpinner.getSelectedItemPosition()).getPvCode();
         String habcode = Habitation.get(homeScreenBinding.habitationSpinner.getSelectedItemPosition()).getHabCode();
         String beneficiary_name = homeScreenBinding.name.getText().toString();

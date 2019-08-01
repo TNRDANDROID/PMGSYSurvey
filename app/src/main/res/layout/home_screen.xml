@@ -8,16 +8,13 @@
             type="com.nic.PMAYSurvey.activity.HomePage" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:orientation="vertical">
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background">
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -60,7 +57,6 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-        </com.google.android.material.appbar.AppBarLayout>
 
 
         <androidx.core.widget.NestedScrollView
@@ -352,19 +348,260 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/tv"
+                    style="@string/font_circular_bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/seec_id_layout"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="Whether the beneficiary is alive"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp" />
+
+
+                <RelativeLayout
+                    android:id="@+id/beneficiary_alive_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/tv"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/header"
+                        android:layout_gravity="center"
+
+                        android:background="@drawable/rectangle_box"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+
+                        <CheckBox
+                            android:id="@+id/alive_yes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="@dimen/_40sdp"
+                            android:checked="false"
+                            android:gravity="center"
+                            android:text="Yes"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/header"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rectangle_box"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+
+                        <CheckBox
+                            android:id="@+id/alive_no"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="@dimen/_40sdp"
+                            android:checked="false"
+                            android:gravity="center"
+                            android:text="No"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/legal_heir_tv"
+                    style="@string/font_circular_bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/beneficiary_alive_layout"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="if No,any legal heir available in SECC data"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:visibility="gone"/>
+
+                <RelativeLayout
+                    android:id="@+id/legal_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/legal_heir_tv"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/header"
+                        android:layout_gravity="center"
+
+                        android:background="@drawable/rectangle_box"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+
+                        <CheckBox
+                            android:id="@+id/legal_yes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="@dimen/_40sdp"
+                            android:checked="false"
+                            android:gravity="center"
+                            android:text="Yes"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/header"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rectangle_box"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+
+                        <CheckBox
+                            android:id="@+id/legal_no"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="@dimen/_40sdp"
+                            android:checked="false"
+                            android:gravity="center"
+                            android:text="No"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/benf_mig_tv"
+                    style="@string/font_circular_bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/legal_layout"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:text="Whether the beneficiary migrated permanently"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp" />
+
+                <RelativeLayout
+                    android:id="@+id/beneficiary_migrated_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/benf_mig_tv"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/header"
+                        android:layout_gravity="center"
+
+                        android:background="@drawable/rectangle_box"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+
+                        <CheckBox
+                            android:id="@+id/mig_yes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="@dimen/_40sdp"
+                            android:checked="false"
+                            android:gravity="center"
+                            android:text="Yes"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/header"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rectangle_box"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+
+                        <CheckBox
+                            android:id="@+id/mig_no"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="@dimen/_40sdp"
+                            android:checked="false"
+                            android:gravity="center"
+                            android:text="No"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp" />
+
+
+                    </RelativeLayout>
+                </RelativeLayout>
+
                 <LinearLayout
                     android:id="@+id/take_pic_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/seec_id_layout"
+                    android:layout_below="@+id/beneficiary_migrated_layout"
                     android:layout_alignParentRight="true"
                     android:onClick="@{()-> activity.validateFields()}"
-                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_25sdp"
                     android:background="@drawable/white_background_left_two_corners"
                     android:orientation="horizontal"
                     android:padding="@dimen/_8sdp">
 
                     <TextView
+                        android:id="@+id/take_photo_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
@@ -469,5 +706,5 @@
         </androidx.core.widget.NestedScrollView>
 
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </RelativeLayout>
 </layout>
