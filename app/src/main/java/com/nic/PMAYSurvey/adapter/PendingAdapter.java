@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -81,6 +82,8 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
         holder.pendingAdapterBinding.secId.setText(pendingListValues.get(position).getSeccId());
         holder.pendingAdapterBinding.name.setText(pendingListValues.get(position).getBeneficiaryName());
 
+        String button_text = pendingListValues.get(position).getButtonText();
+
         String pmay_id = pendingListValues.get(position).getPmayId();
        final Cursor image = db.rawQuery("Select * from " + DBHelper.SAVE_PMAY_IMAGES + " where pmay_id =" + pmay_id, null);
 
@@ -94,22 +97,26 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
         holder.pendingAdapterBinding.upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(image.getCount() == 2 ) {
+                if(button_text.equals("Take Photo")) {
+                    if(image.getCount() == 2 ) {
+                        uploadPending(position);
+                    }
+                    else {
+                        new AlertDialog.Builder(context)
+                                .setTitle("Alert")
+                                .setMessage("There's some photos are missing.Please, delete it and enter details once again")
+                                .setIcon(R.mipmap.alert)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        dialog.cancel();
+                                    }
+                                }).show();
+
+                    }
+                }
+                else if(button_text.equals("Save details")){
                     uploadPending(position);
                 }
-                else {
-                    new AlertDialog.Builder(context)
-                            .setTitle("Alert")
-                            .setMessage("There's some photos are missing.Please, delete it and enter details once again")
-                            .setIcon(R.mipmap.alert)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    dialog.cancel();
-                                }
-                            }).show();
-
-                }
-
             }
         });
 
@@ -162,6 +169,10 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
         String beneficiary_name = pendingListValues.get(position).getBeneficiaryName();
         String father_name = pendingListValues.get(position).getFatherName();
         String secc_id = pendingListValues.get(position).getSeccId();
+        String person_alive = pendingListValues.get(position).getPersonAlive();
+        String legal_heir_available = pendingListValues.get(position).getIsLegel();
+        String person_migrated = pendingListValues.get(position).getIsMigrated();
+        String button_text = pendingListValues.get(position).getButtonText();
 
         String pmay_id = pendingListValues.get(position).getPmayId();
         prefManager.setKeyDeletePosition(position);
@@ -173,6 +184,9 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
             dataset.put(AppConstant.HAB_CODE, habcode);
             dataset.put(AppConstant.BENEFICIARY_NAME, beneficiary_name);
             dataset.put(AppConstant.BENEFICIARY_FATHER_NAME, father_name);
+            dataset.put(AppConstant.PERSON_ALIVE, person_alive);
+            dataset.put(AppConstant.LEGAL_HEIR_AVAILABLE, legal_heir_available);
+            dataset.put(AppConstant.PERSON_MIGRATED, person_migrated);
             dataset.put(AppConstant.SECC_ID, secc_id);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -180,32 +194,34 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
 
         JSONArray imageArray = new JSONArray();
 
-        String image_sql = "Select * from " + DBHelper.SAVE_PMAY_IMAGES + " where pmay_id =" + pmay_id ;
-        Log.d("sql", image_sql);
-        Cursor image = db.rawQuery(image_sql, null);
+        if(button_text.equals("Take Photo")){
+            String image_sql = "Select * from " + DBHelper.SAVE_PMAY_IMAGES + " where pmay_id =" + pmay_id ;
+            Log.d("sql", image_sql);
+            Cursor image = db.rawQuery(image_sql, null);
 
-        if (image.getCount() > 0) {
-            if (image.moveToFirst()) {
-                do {
-                    String latitude = image.getString(image.getColumnIndexOrThrow(AppConstant.KEY_LATITUDE));
-                    String longitude = image.getString(image.getColumnIndexOrThrow(AppConstant.KEY_LONGITUDE));
-                    String images = image.getString(image.getColumnIndexOrThrow(AppConstant.KEY_IMAGE));
-                    String type_of_photo = image.getString(image.getColumnIndexOrThrow(AppConstant.TYPE_OF_PHOTO));
+            if (image.getCount() > 0) {
+                if (image.moveToFirst()) {
+                    do {
+                        String latitude = image.getString(image.getColumnIndexOrThrow(AppConstant.KEY_LATITUDE));
+                        String longitude = image.getString(image.getColumnIndexOrThrow(AppConstant.KEY_LONGITUDE));
+                        String images = image.getString(image.getColumnIndexOrThrow(AppConstant.KEY_IMAGE));
+                        String type_of_photo = image.getString(image.getColumnIndexOrThrow(AppConstant.TYPE_OF_PHOTO));
 
-                    JSONObject imageJson = new JSONObject();
+                        JSONObject imageJson = new JSONObject();
 
-                    try {
-                        imageJson.put(AppConstant.TYPE_OF_PHOTO,type_of_photo);
-                        imageJson.put(AppConstant.KEY_LATITUDE,latitude);
-                        imageJson.put(AppConstant.KEY_LONGITUDE,longitude);
-                        imageJson.put(AppConstant.KEY_IMAGE,images.trim());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        try {
+                            imageJson.put(AppConstant.TYPE_OF_PHOTO,type_of_photo);
+                            imageJson.put(AppConstant.KEY_LATITUDE,latitude);
+                            imageJson.put(AppConstant.KEY_LONGITUDE,longitude);
+                            imageJson.put(AppConstant.KEY_IMAGE,images.trim());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                    imageArray.put(imageJson);
+                        imageArray.put(imageJson);
 
-                } while (image.moveToNext());
+                    } while (image.moveToNext());
+                }
             }
         }
 

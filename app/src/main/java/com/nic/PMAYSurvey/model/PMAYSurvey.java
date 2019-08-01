@@ -29,6 +29,43 @@ public class PMAYSurvey {
     private String HabitationName;
     private String pmayId;
     private String fatherName;
+    private String personAlive;
+    private String buttonText;
+
+    public String getButtonText() {
+        return buttonText;
+    }
+
+    public void setButtonText(String buttonText) {
+        this.buttonText = buttonText;
+    }
+
+    public String getPersonAlive() {
+        return personAlive;
+    }
+
+    public void setPersonAlive(String personAlive) {
+        this.personAlive = personAlive;
+    }
+
+    public String getIsLegel() {
+        return isLegel;
+    }
+
+    public void setIsLegel(String isLegel) {
+        this.isLegel = isLegel;
+    }
+
+    public String getIsMigrated() {
+        return isMigrated;
+    }
+
+    public void setIsMigrated(String isMigrated) {
+        this.isMigrated = isMigrated;
+    }
+
+    private String isLegel;
+    private String isMigrated;
 
     public String getFatherName() {
         return fatherName;

@@ -237,6 +237,63 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.BENEFICIARY_NAME)));
                     card.setFatherName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.BENEFICIARY_FATHER_NAME)));
+                    card.setPersonAlive(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PERSON_ALIVE)));
+                    card.setIsLegel(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.LEGAL_HEIR_AVAILABLE)));
+                    card.setIsMigrated(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PERSON_MIGRATED)));
+                    card.setButtonText(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BUTTON_TEXT)));
+
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e) {
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        try {
+//            cursor = db.query(DBHelper.SAVE_PMAY_DETAILS,
+//                    new String[]{"*"}, selection, selectionArgs, null, null, null);
+            cursor = db.rawQuery("select * from "+DBHelper.SAVE_PMAY_DETAILS+" where button_text = 'Save details'",null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    PMAYSurvey card = new PMAYSurvey();
+
+                    card.setPmayId(cursor.getString(cursor
+                            .getColumnIndexOrThrow("id")));
+                    card.setDistictCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
+                    card.setBlockCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BLOCK_CODE)));
+                    card.setPvCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_CODE)));
+                    card.setHabCode(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.HAB_CODE)));
+                    card.setPvName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PV_NAME)));
+                    card.setHabitationName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.HABITATION_NAME)));
+                    card.setSeccId(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.SECC_ID)));
+                    card.setBeneficiaryName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BENEFICIARY_NAME)));
+                    card.setFatherName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BENEFICIARY_FATHER_NAME)));
+                    card.setPersonAlive(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PERSON_ALIVE)));
+                    card.setIsLegel(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.LEGAL_HEIR_AVAILABLE)));
+                    card.setIsMigrated(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PERSON_MIGRATED)));
+                    card.setButtonText(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.BUTTON_TEXT)));
 
 
                     cards.add(card);

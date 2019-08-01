@@ -59,6 +59,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 "habitation_name TEXT," +
                 "secc_id TEXT," +
                 "beneficiary_name TEXT," +
+                "person_alive TEXT," +
+                "legal_heir_available TEXT," +
+                "person_migrated TEXT," +
+                "button_text TEXT," +
                 "beneficiary_father_name TEXT)");
 
 

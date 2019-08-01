@@ -54,6 +54,10 @@ public class AppConstant {
     public static String KEY_TRACK_DATA = "track_data";
     public static String PMAY_ID = "pmay_id";
     public static String KEY_PMAY_SOURCE_DATA_PHOTO = "pmay_source_data_photo";
+    public static String PERSON_ALIVE = "person_alive";
+    public static String LEGAL_HEIR_AVAILABLE = "legal_heir_available";
+    public static String PERSON_MIGRATED = "person_migrated";
+    public static String BUTTON_TEXT = "button_text";
 
 
 

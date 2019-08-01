@@ -495,15 +495,20 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     }
 
     public void checkLegalYesNo() {
-        if ((homeScreenBinding.migYes.isChecked()) || homeScreenBinding.migNo.isChecked()) {
+        if ((isLegal.equalsIgnoreCase("N"))) {
             takePhoto(homeScreenBinding.takePhotoTv.getText().toString());
         } else {
-            Utils.showAlert(this, "Check the beneficiary is Migrated or not!");
+            if ((homeScreenBinding.migYes.isChecked()) || homeScreenBinding.migNo.isChecked()) {
+                takePhoto(homeScreenBinding.takePhotoTv.getText().toString());
+            } else {
+                Utils.showAlert(this, "Check the beneficiary is Migrated or not!");
+            }
         }
     }
 
-    public void takePhoto(String Txt) {
-        Log.d("ButtonType",""+Txt);
+
+    public void takePhoto(String buttonTxt) {
+        Log.d("buttonTxt",""+buttonTxt);
         String pvcode = Village.get(homeScreenBinding.villageSpinner.getSelectedItemPosition()).getPvCode();
         String habcode = Habitation.get(homeScreenBinding.habitationSpinner.getSelectedItemPosition()).getHabCode();
         String beneficiary_name = homeScreenBinding.name.getText().toString();
@@ -520,27 +525,39 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         registerValue.put(AppConstant.BENEFICIARY_NAME, beneficiary_name);
         registerValue.put(AppConstant.BENEFICIARY_FATHER_NAME, father_name);
         registerValue.put(AppConstant.SECC_ID, secc_id);
+        registerValue.put(AppConstant.PERSON_ALIVE, isAlive);
+        registerValue.put(AppConstant.LEGAL_HEIR_AVAILABLE, isLegal);
+        registerValue.put(AppConstant.PERSON_MIGRATED, isMigrated);
+        registerValue.put(AppConstant.BUTTON_TEXT, buttonTxt);
 
         long id = db.insert(DBHelper.SAVE_PMAY_DETAILS, null, registerValue);
+        Log.d("insert_id",String.valueOf(id));
 
-        if(id > 0) {
+        if(buttonTxt.equals("Take Photo")){
+            if(id > 0) {
 
-            Cursor cursor = db.rawQuery("SELECT MAX(id) FROM " + DBHelper.SAVE_PMAY_DETAILS, null);
-            Log.d("cursor_count", String.valueOf(cursor.getCount()));
-            if (cursor.getCount() > 0) {
-                if (cursor.moveToFirst()) {
-                    do {
-                        lastInsertedID = String.valueOf(cursor.getInt(0));
-                        Log.d("lastID", "" + lastInsertedID);
-                    } while (cursor.moveToNext());
+                Cursor cursor = db.rawQuery("SELECT MAX(id) FROM " + DBHelper.SAVE_PMAY_DETAILS, null);
+                Log.d("cursor_count", String.valueOf(cursor.getCount()));
+                if (cursor.getCount() > 0) {
+                    if (cursor.moveToFirst()) {
+                        do {
+                            lastInsertedID = String.valueOf(cursor.getInt(0));
+                            Log.d("lastID", "" + lastInsertedID);
+                        } while (cursor.moveToNext());
+                    }
                 }
-            }
 
-            Intent intent = new Intent(this, TakePhotoScreen.class);
-            intent.putExtra("lastInsertedID",lastInsertedID);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                Intent intent = new Intent(this, TakePhotoScreen.class);
+                intent.putExtra("lastInsertedID",lastInsertedID);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        }else {
+            Utils.showAlert(this,"Saved");
+            syncButtonVisibility();
         }
+
+
     }
 
     public void syncButtonVisibility() {
