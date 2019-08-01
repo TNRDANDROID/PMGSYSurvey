@@ -81,7 +81,20 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
         holder.pendingAdapterBinding.villageName.setText(pendingListValues.get(position).getPvName());
         holder.pendingAdapterBinding.secId.setText(pendingListValues.get(position).getSeccId());
         holder.pendingAdapterBinding.name.setText(pendingListValues.get(position).getBeneficiaryName());
-
+        if(!pendingListValues.get(position).getPersonAlive().equalsIgnoreCase("")){
+            holder.pendingAdapterBinding.aliveLayout.setVisibility(View.VISIBLE);
+            holder.pendingAdapterBinding.aliveView.setVisibility(View.VISIBLE);
+            holder.pendingAdapterBinding.beneficiaryAliveTv.setText(pendingListValues.get(position).getPersonAlive());
+        }
+        if(!pendingListValues.get(position).getIsLegel().equalsIgnoreCase("")){
+            holder.pendingAdapterBinding.legalHeirLayout.setVisibility(View.VISIBLE);
+            holder.pendingAdapterBinding.legalView.setVisibility(View.VISIBLE);
+            holder.pendingAdapterBinding.legalHeirTv.setText(pendingListValues.get(position).getIsLegel());
+        }
+        if(!pendingListValues.get(position).getIsMigrated().equalsIgnoreCase("")){
+            holder.pendingAdapterBinding.beneficiaryMigratedLayout.setVisibility(View.VISIBLE);
+            holder.pendingAdapterBinding.beneficiaryMigratedTv.setText(pendingListValues.get(position).getIsMigrated());
+        }
         String button_text = pendingListValues.get(position).getButtonText();
 
         String pmay_id = pendingListValues.get(position).getPmayId();
