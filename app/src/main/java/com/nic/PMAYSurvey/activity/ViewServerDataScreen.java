@@ -91,8 +91,6 @@ public class ViewServerDataScreen extends AppCompatActivity implements Api.Serve
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-
-                    pref_Village = Village.get(position).getHabitationName();
                     prefManager.setHabCode(Habitation.get(position).getHabCode());
                     new fetchScheduletask().execute();
                 }

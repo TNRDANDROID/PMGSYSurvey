@@ -65,6 +65,20 @@ public class ViewServerDataListAdapter extends RecyclerView.Adapter<ViewServerDa
         holder.viewServerDataAdapterBinding.villageName.setText(serverDataListValuesFiltered.get(position).getPvName());
         holder.viewServerDataAdapterBinding.habName.setText(serverDataListValuesFiltered.get(position).getHabitationName());
         holder.viewServerDataAdapterBinding.secId.setText(serverDataListValuesFiltered.get(position).getSeccId());
+        if(!serverDataListValuesFiltered.get(position).getPersonAlive().equalsIgnoreCase("")){
+            holder.viewServerDataAdapterBinding.aliveLayout.setVisibility(View.VISIBLE);
+            holder.viewServerDataAdapterBinding.aliveView.setVisibility(View.VISIBLE);
+            holder.viewServerDataAdapterBinding.beneficiaryAliveTv.setText(serverDataListValues.get(position).getPersonAlive());
+        }
+        if(!serverDataListValuesFiltered.get(position).getIsLegel().equalsIgnoreCase("")){
+            holder.viewServerDataAdapterBinding.legalHeirLayout.setVisibility(View.VISIBLE);
+            holder.viewServerDataAdapterBinding.legalView.setVisibility(View.VISIBLE);
+            holder.viewServerDataAdapterBinding.legalHeirTv.setText(serverDataListValues.get(position).getIsLegel());
+        }
+        if(!serverDataListValuesFiltered.get(position).getIsMigrated().equalsIgnoreCase("")){
+            holder.viewServerDataAdapterBinding.beneficiaryMigratedLayout.setVisibility(View.VISIBLE);
+            holder.viewServerDataAdapterBinding.beneficiaryMigratedTv.setText(serverDataListValues.get(position).getIsMigrated());
+        }
         holder.viewServerDataAdapterBinding.viewServerImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

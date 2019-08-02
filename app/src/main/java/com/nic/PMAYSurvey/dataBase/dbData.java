@@ -146,6 +146,9 @@ public class dbData {
         values.put(AppConstant.SECC_ID, pmgsySurvey.getSeccId());
         values.put(AppConstant.HABITATION_NAME, pmgsySurvey.getHabitationName());
         values.put(AppConstant.PV_NAME, pmgsySurvey.getPvName());
+        values.put(AppConstant.PERSON_ALIVE, pmgsySurvey.getPersonAlive());
+        values.put(AppConstant.LEGAL_HEIR_AVAILABLE, pmgsySurvey.getIsLegel());
+        values.put(AppConstant.PERSON_MIGRATED, pmgsySurvey.getIsMigrated());
 
         long id = db.insert(DBHelper.PMAY_LIST_TABLE_NAME,null,values);
         Log.d("Inserted_id_PMAY_LIST", String.valueOf(id));
@@ -185,6 +188,12 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.HABITATION_NAME)));
                     card.setPvName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.PV_NAME)));
+                    card.setPersonAlive(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PERSON_MIGRATED)));
+                    card.setIsLegel(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.LEGAL_HEIR_AVAILABLE)));
+                    card.setIsMigrated(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.PERSON_MIGRATED)));
 
                     cards.add(card);
                 }

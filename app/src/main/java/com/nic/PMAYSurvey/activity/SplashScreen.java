@@ -13,6 +13,7 @@ import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.databinding.SplashScreenBinding;
 import com.nic.PMAYSurvey.helper.AppVersionHelper;
 import com.nic.PMAYSurvey.session.PrefManager;
+import com.nic.PMAYSurvey.utils.Utils;
 
 
 public class SplashScreen extends AppCompatActivity implements
@@ -30,13 +31,12 @@ public class SplashScreen extends AppCompatActivity implements
         splashScreenBinding = DataBindingUtil.setContentView(this, R.layout.splash_screen);
         splashScreenBinding.setActivity(this);
         prefManager = new PrefManager(this);
-        showSignInScreen();
-//        if (Utils.isOnline()) {
-//           checkAppVersion();
-//        } else {
-//            showSignInScreen();
-//
-//        }
+        if (Utils.isOnline()) {
+           checkAppVersion();
+        } else {
+            showSignInScreen();
+
+        }
     }
 
 

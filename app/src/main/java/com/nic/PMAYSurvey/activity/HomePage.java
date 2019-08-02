@@ -555,6 +555,8 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         }else {
             Utils.showAlert(this,"Saved");
             syncButtonVisibility();
+            finish();
+            startActivity(getIntent());
         }
 
 
@@ -602,6 +604,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                             pmaySurvey.setSeccId(jsonArray.getJSONObject(i).getString(AppConstant.SECC_ID));
                             pmaySurvey.setHabitationName(jsonArray.getJSONObject(i).getString(AppConstant.HABITATION_NAME));
                             pmaySurvey.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
+                            pmaySurvey.setPersonAlive(jsonArray.getJSONObject(i).getString(AppConstant.PERSON_ALIVE));
+                            pmaySurvey.setIsLegel(jsonArray.getJSONObject(i).getString(AppConstant.LEGAL_HEIR_AVAILABLE));
+                            pmaySurvey.setIsMigrated(jsonArray.getJSONObject(i).getString(AppConstant.PERSON_MIGRATED));
 
                             dbData.insertPMAY(pmaySurvey);
                         } catch (JSONException e) {

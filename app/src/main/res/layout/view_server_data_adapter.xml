@@ -389,7 +389,7 @@
                             android:layout_marginLeft="15dp"
                             android:layout_marginRight="15dp"
                             android:background="@drawable/background"
-                            android:visibility="gone" />
+                            />
 
                         <LinearLayout
                             android:id="@+id/alive_layout"
@@ -550,7 +550,7 @@
                             android:id="@+id/beneficiary_migrated_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-android:visibility="gone"
+                            android:visibility="gone"
                             android:orientation="horizontal">
 
                             <LinearLayout

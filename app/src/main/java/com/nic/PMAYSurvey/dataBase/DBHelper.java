@@ -47,6 +47,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 "beneficiary_name  TEXT," +
                 "secc_id  TEXT," +
                 "habitation_name TEXT," +
+                "person_alive TEXT," +
+                "legal_heir_available TEXT," +
+                "person_migrated TEXT," +
                 "pvname TEXT)");
 
         db.execSQL("CREATE TABLE " + SAVE_PMAY_DETAILS + " ("
