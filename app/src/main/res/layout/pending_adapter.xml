@@ -334,7 +334,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:padding="5dp"
-                                    android:text="Secc Id"
+                                    android:text="SECC Id"
                                     android:textAlignment="viewEnd"
                                     android:textColor="#000"
                                     android:textSize="18sp" />
