@@ -189,7 +189,7 @@ public class dbData {
                     card.setPvName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.PV_NAME)));
                     card.setPersonAlive(cursor.getString(cursor
-                            .getColumnIndexOrThrow(AppConstant.PERSON_MIGRATED)));
+                            .getColumnIndexOrThrow(AppConstant.PERSON_ALIVE)));
                     card.setIsLegel(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.LEGAL_HEIR_AVAILABLE)));
                     card.setIsMigrated(cursor.getString(cursor
