@@ -94,7 +94,7 @@
                                 android:layout_toRightOf="@+id/image"
                                 android:background="@android:color/transparent"
                                 android:hint="USER NAME"
-                                android:inputType="textEmailAddress"
+                                android:inputType="text"
                                 android:singleLine="true"
                                 android:padding="@dimen/_15sdp"
                                 android:textColorHint="#606060"

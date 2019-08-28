@@ -88,10 +88,11 @@ public class PendingAdapter extends RecyclerView.Adapter<PendingAdapter.MyViewHo
         }
         if(!pendingListValues.get(position).getIsLegel().equalsIgnoreCase("")){
             holder.pendingAdapterBinding.legalHeirLayout.setVisibility(View.VISIBLE);
-            holder.pendingAdapterBinding.legalView.setVisibility(View.VISIBLE);
+            holder.pendingAdapterBinding.legalView.setVisibility(View.GONE);
             holder.pendingAdapterBinding.legalHeirTv.setText(pendingListValues.get(position).getIsLegel());
         }
         if(!pendingListValues.get(position).getIsMigrated().equalsIgnoreCase("")){
+            holder.pendingAdapterBinding.legalView.setVisibility(View.VISIBLE);
             holder.pendingAdapterBinding.beneficiaryMigratedLayout.setVisibility(View.VISIBLE);
             holder.pendingAdapterBinding.beneficiaryMigratedTv.setText(pendingListValues.get(position).getIsMigrated());
         }

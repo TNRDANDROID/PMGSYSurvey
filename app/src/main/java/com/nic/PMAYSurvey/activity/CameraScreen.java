@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +52,7 @@ import com.nic.PMAYSurvey.utils.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,11 +159,13 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
                         float[] results = new float[1];
                         Location.distanceBetween(latitude, longitude, offlatTextValue, offlongTextValue, results);
+                        Log.d("offlatitude :"+offlatTextValue,"offlongitude :"+offlongTextValue);
                         float distanceInMeters = results[0];
-                        boolean isWithin10m = distanceInMeters < 0.005;
+                        Log.d("isWithin10m", String.valueOf(distanceInMeters));
+                        boolean isWithin10m = distanceInMeters < 15.0;
                         Log.d("isWithin10m", String.valueOf(isWithin10m));
-
-//                        if (distance(latitude, longitude, offlatTextValue, offlongTextValue,"K") < 15) {
+                        distFrom(latitude, longitude, offlatTextValue, offlongTextValue);
+//                        if (isWithin10m) {
 //                            continue;
 //                        }
 //                        else {
@@ -197,7 +201,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             Log.d("insIdsavePMAY", String.valueOf(id));
 
         } catch (Exception e) {
-            Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
+//            Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
             //e.printStackTrace();
         }
     }
@@ -213,57 +217,6 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         float dist = (float) (earthRadius * c);
         Log.d("DistMeter", "" + dist);
         return dist;
-    }
-
-    public static double measure(Double lat1, Double lon1, Double lat2, Double lon2) {  // generally used geo measurement function
-        double R = 6378.137; // Radius of earth in KM
-        double dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
-        double dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double d = R * c;
-        Log.d("DistMeter", "" + d * 1000);
-        return d * 1000; // meters
-    }
-
-    private double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
-        if ((lat1 == lat2) && (lon1 == lon2)) {
-            return 0;
-        }
-        else {
-            double theta = lon1 - lon2;
-
-            double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-
-            dist = Math.acos(dist);
-
-            dist = rad2deg(dist);
-
-            dist = dist * 60 * 1.1515;
-
-            if (unit.equalsIgnoreCase("K")) {
-
-                dist = dist * 1.609344;
-
-            }
-            double meter = dist * 1000;
-            Log.d("meter", "" + meter);
-            return (meter);
-        }
-    }
-
-    private double deg2rad(double deg) {
-
-        return (deg * Math.PI / 180.0);
-
-    }
-
-    private double rad2deg(double rad) {
-
-        return (rad * 180.0 / Math.PI);
-
     }
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -381,23 +334,45 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
             cameraScreenBinding.imageViewPreview.setVisibility(View.GONE);
             cameraScreenBinding.imageView.setVisibility(View.VISIBLE);
-            Matrix mtx = new Matrix();
-            // As Front camera is Mirrored so Fliping the Orientation
-
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1 || Build.VERSION.SDK_INT == Build.VERSION_CODES.N ) {
-                mtx.postRotate(90);
-            } else {
-                mtx.postRotate(0);
+            ExifInterface ei = null;
+            try {
+                ei = new ExifInterface(imageStoragePath);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            Log.d("buildversion",""+ Build.VERSION.SDK_INT);
-            Log.d("buildversion",""+ Build.VERSION_CODES.N);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mtx, true);
-            cameraScreenBinding.imageView.setImageBitmap(bitmap);
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            Bitmap rotatedBitmap = null;
+            switch(orientation) {
+
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotatedBitmap = rotateImage(bitmap, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotatedBitmap = rotateImage(bitmap, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotatedBitmap = rotateImage(bitmap, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    rotatedBitmap = bitmap;
+            }
+            cameraScreenBinding.imageView.setImageBitmap(rotatedBitmap);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
-
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if the result is capturing Image

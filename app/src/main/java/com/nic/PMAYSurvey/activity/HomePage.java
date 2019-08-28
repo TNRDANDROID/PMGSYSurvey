@@ -24,6 +24,7 @@ import androidx.databinding.DataBindingUtil;
 import com.android.volley.VolleyError;
 import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.adapter.CommonAdapter;
+import com.nic.PMAYSurvey.adapter.PendingAdapter;
 import com.nic.PMAYSurvey.api.Api;
 import com.nic.PMAYSurvey.api.ApiService;
 import com.nic.PMAYSurvey.api.ServerResponse;
@@ -34,6 +35,7 @@ import com.nic.PMAYSurvey.databinding.HomeScreenBinding;
 import com.nic.PMAYSurvey.dialog.MyDialog;
 import com.nic.PMAYSurvey.model.PMAYSurvey;
 import com.nic.PMAYSurvey.session.PrefManager;
+import com.nic.PMAYSurvey.support.ProgressHUD;
 import com.nic.PMAYSurvey.utils.UrlGenerator;
 import com.nic.PMAYSurvey.utils.Utils;
 
@@ -56,6 +58,7 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
     private List<PMAYSurvey> Habitation = new ArrayList<>();
     String lastInsertedID;
     String isAlive = "", isLegal = "", isMigrated = "";
+    private ProgressHUD progressHUD;
 
 
     String pref_Village;
@@ -226,6 +229,12 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
 
 
     public void validateYesNo() {
+        if (isAlive.equalsIgnoreCase("Y")) {
+            isLegal = "";
+        }
+        if (isAlive.equalsIgnoreCase("N") && isLegal.equalsIgnoreCase("N")) {
+            isMigrated = "";
+        }
         if (isAlive.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("Y")) {
             homeScreenBinding.takePhotoTv.setText("Save details");
         } else if (isAlive.equalsIgnoreCase("Y") && isMigrated.equalsIgnoreCase("N")) {
@@ -397,7 +406,6 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     new InsertPMAYTask().execute(jsonObject);
-                    dataFromServer();
                 }else if(jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("NO_RECORD") && jsonObject.getString("MESSAGE").equalsIgnoreCase("NO_RECORD")){
                     Utils.showAlert(this,"No Record Found!");
                 }
@@ -555,8 +563,9 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         }else {
             Utils.showAlert(this,"Saved");
             syncButtonVisibility();
-            finish();
-            startActivity(getIntent());
+            emptyValue();
+//            finish();
+//            startActivity(getIntent());
         }
 
 
@@ -571,6 +580,24 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
         }else {
             homeScreenBinding.synData.setVisibility(View.GONE);
         }
+    }
+
+    public void emptyValue() {
+        homeScreenBinding.villageSpinner.setSelection(0);
+        homeScreenBinding.habitationSpinner.setSelection(0);
+        homeScreenBinding.fatherName.setText("");
+        homeScreenBinding.name.setText("");
+        homeScreenBinding.seccId.setText("");
+        homeScreenBinding.aliveYes.setChecked(false);
+        homeScreenBinding.aliveNo.setChecked(false);
+        homeScreenBinding.legalYes.setChecked(false);
+        homeScreenBinding.legalNo.setChecked(false);
+        homeScreenBinding.migYes.setChecked(false);
+        homeScreenBinding.migNo.setChecked(false);
+        isLegal = "";
+        isAlive = "";
+        isMigrated = "";
+
     }
 
     public void openPendingScreen() {
@@ -619,7 +646,21 @@ public class HomePage extends AppCompatActivity implements Api.ServerResponseLis
             }
             return null;
         }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(HomePage.this, "Downloading", true, false, null);
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(progressHUD!=null){
+                progressHUD.cancel();
+            }
+            dataFromServer();
+
+        }
     }
 
 }
