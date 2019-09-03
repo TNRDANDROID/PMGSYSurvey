@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.nic.PMAYSurvey.BuildConfig;
 import com.nic.PMAYSurvey.R;
 import com.nic.PMAYSurvey.databinding.SplashScreenBinding;
 import com.nic.PMAYSurvey.helper.AppVersionHelper;
@@ -31,11 +32,15 @@ public class SplashScreen extends AppCompatActivity implements
         splashScreenBinding = DataBindingUtil.setContentView(this, R.layout.splash_screen);
         splashScreenBinding.setActivity(this);
         prefManager = new PrefManager(this);
-        if (Utils.isOnline()) {
-           checkAppVersion();
+        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("production")) {
+            if (Utils.isOnline()) {
+                checkAppVersion();
+            } else {
+                showSignInScreen();
+
+            }
         } else {
             showSignInScreen();
-
         }
     }
 
