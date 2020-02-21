@@ -29,7 +29,7 @@ android {
             def version = variant.versionName
             def date = new Date()
             def formattedDate = date.format('ddMMyy')
-            outputFileName = "PMAYSurvey${variant.buildType.name}_v${version}_${formattedDate}.apk"
+            outputFileName = "PMAY_Survey${variant.buildType.name}_v${version}_${formattedDate}.apk"
         }
     }
     buildTypes {
